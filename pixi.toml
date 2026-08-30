@@ -1,0 +1,35 @@
+[workspace]
+name = "pedestrian-intent-forecast"
+version = "0.1.0"
+description = "Multi-modal pedestrian crossing-intent forecasting from pose, gesture and scene context"
+channels = ["conda-forge", "pytorch", "nvidia"]
+platforms = ["linux-64"]
+
+[dependencies]
+python = "3.11.*"
+numpy = ">=1.26,<2"
+scipy = ">=1.11"
+pyyaml = ">=6.0"
+tqdm = ">=4.66"
+pytest = ">=8.0"
+
+[pypi-dependencies]
+# torch comes from PyPI rather than the pytorch conda channel: the cu121 wheel
+# pulls its own CUDA runtime, so the env does not have to agree with the system
+# CUDA install. See HANDOFF.md for the version of this that used conda pytorch.
+torch = ">=2.2"
+mediapipe = ">=0.10.9"
+onnx = ">=1.15"
+onnxruntime = ">=1.17"
+opencv-python-headless = ">=4.9"
+pif = { path = ".", editable = true }
+
+[tasks]
+smoke = "python -m scripts.smoke_test"
+train = "python -m scripts.train --config configs/fusion.yaml"
+train-baseline = "python -m scripts.train --config configs/pose_only.yaml"
+ablation = "python -m scripts.run_ablation"
+eval = "python -m scripts.evaluate"
+export-onnx = "python -m scripts.export_onnx"
+parse-jaad = "python -m scripts.parse_annotations --dataset jaad"
+test = "pytest tests -q"

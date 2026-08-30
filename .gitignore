@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+.pixi/
+.venv/
+venv/
+
+# JAAD and PIE reference repos are cloned by scripts/fetch_external.sh.
+# Keeping them out of git: 600MB+, and they carry their own history.
+external/
+
+data/
+checkpoints/
+runs/
+*.pt
+*.pth
+*.onnx
+*.ckpt
+
+.ipynb_checkpoints/
+.pytest_cache/
+.DS_Store
+*.swp

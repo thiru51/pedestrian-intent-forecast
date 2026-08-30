@@ -1,0 +1,50 @@
+# Pose-only baseline: the ablation target. Same backbone, same schedule,
+# same data, same seed - only the input branches differ. Roughly the family
+# of methods in Fang & Lopez, IV 2018 (crossing from body pose alone).
+# use_context/use_gesture/fuse_trajectory are forced off by config.load()
+# when model_type is pose_only; they are written out here to be explicit.
+name: pose_only
+model_type: pose_only
+
+data:
+  source: synthetic      # switch to jaad or pie once the clips are downloaded
+  root: ""               # external/jaad or external/pie
+  window: 16             # observation length in frames (0.53 s at 30 fps)
+  lead: 45               # forecast horizon in frames (1.5 s)
+  stride: 4              # window step
+  horizon: 15            # future trajectory steps the GRU regresses (0.5 s)
+  n_tracks: 800          # synthetic only
+  track_length: 140      # synthetic only
+  positive_fraction: 0.4 # synthetic only
+  val_fraction: 0.25
+  seed: 0
+  max_videos: 0          # 0 = every video in the split
+
+model:
+  d_model: 128
+  n_layers: 3
+  n_heads: 4
+  mlp_ratio: 2.0
+  dropout: 0.1
+  gesture_hidden: 96
+  intent_hidden: 64
+  traj_hidden: 64
+  use_context: false
+  use_gesture: false
+  fuse_trajectory: false
+
+train:
+  epochs: 30
+  lr: 0.0003
+  weight_decay: 0.01
+  grad_clip: 1.0
+  warmup_epochs: 2
+
+loss:
+  intent: 1.0
+  trajectory: 0.5
+  gesture: 0.0    # no gesture head to supervise
+
+batch_size: 0    # 0 = auto-scale from detected VRAM
+num_workers: -1  # -1 = auto from os.cpu_count()
+out_dir: artifacts
