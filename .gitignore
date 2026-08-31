@@ -2,8 +2,6 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .eggs/
-build/
-dist/
 
 .pixi/
 .venv/
@@ -11,11 +9,18 @@ venv/
 
 # JAAD and PIE reference repos are cloned by scripts/fetch_external.sh.
 # Keeping them out of git: 600MB+, and they carry their own history.
-external/
+/external/
 
-data/
-checkpoints/
-runs/
+# Leading slashes matter here. A bare "data/" matches a directory called data
+# at ANY depth, which silently swallowed the whole src/pif/data package.
+# Anchored to the repo root, these only hide the caches they were meant to.
+/data/
+/checkpoints/
+/runs/
+/artifacts/
+/build/
+/dist/
+
 *.pt
 *.pth
 *.onnx
