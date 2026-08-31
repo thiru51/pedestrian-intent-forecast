@@ -25,9 +25,24 @@ The three that carry most of the weight:
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import numpy as np
 
-from ..data.schema import JAAD_EGO_SPEED_PROXY, VideoAnnotation, PedTrack
+if TYPE_CHECKING:  # pif.data imports this module, so it must not import it back
+    from ..data.schema import PedTrack, VideoAnnotation
+
+# JAAD's per-frame ego action is categorical. These are the speed proxies we
+# substitute in m/s when no OBD trace exists (PIE has real OBD_speed and uses
+# that instead). The values are a coarse reading of the JAAD paper's driving
+# description, not measurements, and only feed a normalised context channel.
+JAAD_EGO_SPEED_PROXY = {
+    "stopped": 0.0,
+    "moving_slow": 3.0,
+    "moving_fast": 11.0,
+    "decelerating": 5.0,
+    "accelerating": 7.0,
+}
 
 CONTEXT_FEATURES: tuple[str, ...] = (
     "cx",               # box centre, image-normalised

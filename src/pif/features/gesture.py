@@ -12,9 +12,13 @@ the annotation strings are training signal only.
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import numpy as np
 
-from ..data.schema import PedTrack
+if TYPE_CHECKING:  # pif.data imports this module, so it must not import it back
+    from ..data.schema import PedTrack
+
 from ..taxonomy import (
     Atomic,
     Communicative,
