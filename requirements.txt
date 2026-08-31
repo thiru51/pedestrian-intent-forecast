@@ -1,0 +1,40 @@
+# pip install path. The pixi path (pixi.toml + pixi.lock) is the one that is
+# pinned exactly; this file exists so the repo can be installed in a plain
+# venv without pixi. Every entry below is something the code actually imports.
+#
+#   python3.11 -m venv .venv
+#   source .venv/bin/activate
+#   pip install --upgrade pip
+#   pip install -r requirements.txt
+#   pip install -e .
+#
+# For CUDA, install torch from the PyTorch index first, then this file:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu121
+
+# Core numerics. Pinned below 2.0 because mediapipe's released wheels are
+# built against the numpy 1.x ABI and abort at import time on numpy 2.
+numpy>=1.26,<2
+
+# Reads configs/*.yaml (pif.config).
+PyYAML>=6.0
+
+# The model, the training loop, and the ONNX exporter. 2.2 is the floor
+# because pif.train.loop uses the torch.amp.GradScaler("cuda") API.
+torch>=2.2
+
+# ONNX export and the round-trip check. onnx does the graph validation
+# (onnx.checker), onnxruntime reloads the graph and produces the numbers that
+# get compared against torch (pif.export.onnx).
+onnx>=1.15
+onnxruntime>=1.17
+
+# Pose estimation on real video clips (pif.features.pose.PoseExtractor).
+# Only scripts/extract_pose.py needs it; everything else runs without it.
+mediapipe>=0.10.9
+
+# Video decoding for the same script. The headless build has no GUI bindings,
+# which is what you want on a server and is one less system library to have.
+opencv-python-headless>=4.9
+
+# Test runner.
+pytest>=8.0
