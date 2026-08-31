@@ -23,6 +23,7 @@ onnx = ">=1.15"
 onnxruntime = ">=1.17"
 opencv-python-headless = ">=4.9"
 pif = { path = ".", editable = true }
+onnxscript = ">=0.7.1, <0.8"
 
 [tasks]
 smoke = "python -m scripts.smoke_test"

@@ -96,7 +96,28 @@ def export(
         opset_version=opset,
         do_constant_folding=True,
     )
+    _fold_in_external_weights(path)
     return path
+
+
+def _fold_in_external_weights(path: Path) -> None:
+    """Make the export one self-contained file.
+
+    torch's newer ONNX exporter puts the weights in a sidecar "<name>.onnx.data"
+    and leaves only the graph in the .onnx. That is right for a multi-gigabyte
+    model and wrong here: this one is under two megabytes, and a deployment that
+    copies the .onnx to a board and leaves the sidecar behind gets a file that
+    loads and then fails. It also made the exporter's reported file size a
+    twentieth of the truth.
+    """
+    sidecar = path.with_name(path.name + ".data")
+    if not sidecar.is_file():
+        return
+    import onnx
+
+    model = onnx.load(str(path))  # resolves the sidecar relative to the .onnx
+    onnx.save(model, str(path))
+    sidecar.unlink()
 
 
 def verify(
