@@ -268,3 +268,46 @@ def test_occlusion_reaches_the_context_features(video):
 
     values = np.concatenate([w.context[:, CTX["occlusion"]] for w in occluded])
     assert values.max() > 0.0
+
+
+# --------------------------------------------------------------------------
+# The collector's camera maths.
+#
+# scripts/collect_carla.py only runs against a live simulator, but the 3D-to-2D
+# projection inside it is ordinary arithmetic and is the easiest thing in the
+# whole collector to get wrong. It imports carla softly for exactly this
+# reason, so these two tests run here, in the environment that has no carla.
+# --------------------------------------------------------------------------
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from scripts.collect_carla import intrinsics, project  # noqa: E402
+
+
+def test_intrinsics_from_field_of_view():
+    k = intrinsics(1280, 720, 90.0)
+    # At a 90 degree horizontal field of view the focal length is half the
+    # image width, because the image edge sits at 45 degrees.
+    assert k[0, 0] == pytest.approx(640.0)
+    assert k[1, 1] == pytest.approx(640.0)
+    assert (k[0, 2], k[1, 2]) == (640.0, 360.0)
+
+
+def test_projection_uses_the_unreal_axis_convention():
+    """CARLA is x forward, y right, z up. A pinhole matrix is x right, y down,
+    z forward. Getting that swap wrong mirrors every box in the dataset."""
+    k = intrinsics(1280, 720, 90.0)
+    identity = np.eye(4)  # camera at the world origin, facing along +x
+    points = np.array(
+        [
+            [10.0, 0.0, 0.0],  # straight ahead
+            [10.0, 1.0, 0.0],  # one metre to the right
+            [10.0, 0.0, 1.0],  # one metre up
+        ]
+    )
+    pixels, depth = project(points, identity, k)
+
+    assert depth == pytest.approx([10.0, 10.0, 10.0])
+    assert pixels[0] == pytest.approx([640.0, 360.0])
+    assert pixels[1][0] > pixels[0][0]   # right in the world is right in frame
+    assert pixels[2][1] < pixels[0][1]   # up in the world is up in frame
