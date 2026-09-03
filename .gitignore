@@ -6,6 +6,9 @@ __pycache__/
 .pixi/
 .venv/
 venv/
+# The CARLA collector runs in its own interpreter. See README, "Two
+# environments", for why it cannot share the pixi one.
+.venv-carla/
 
 # JAAD and PIE reference repos are cloned by scripts/fetch_external.sh.
 # Keeping them out of git: 600MB+, and they carry their own history.
@@ -15,6 +18,12 @@ venv/
 # at ANY depth, which silently swallowed the whole src/pif/data package.
 # Anchored to the repo root, these only hide the caches they were meant to.
 /data/
+# The simulator itself: an 8.3 GB tarball that unpacks to about 20 GB. Fetched
+# by scripts/fetch_carla.sh, never committed. Leading slash for the same reason
+# as the rest of this block: an unanchored "carla/" would also match a
+# directory inside src/pif/.
+/carla/
+/CARLA_*.tar.gz
 /checkpoints/
 /runs/
 /artifacts/
