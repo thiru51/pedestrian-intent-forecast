@@ -49,10 +49,18 @@ and PIE once access lands, and report the two numbers separately.**
 - [x] `scripts/fetch_carla.sh` to download and unpack the 8.3 GB server
 - [x] Parser tests that run in the pixi environment with no carla installed and
       no server, against a small committed fixture
-- [ ] **Episodes actually collected from a running server** — OPEN. The
-      collector has never talked to a live CARLA. No frame count, episode
-      count or timing from it is quoted anywhere in this repository
-- [ ] Training run on CARLA episodes
+- [x] Episodes collected from a live CARLA 0.9.16 server on Town10HD_Opt:
+      19 written of 20 attempted, 5,320 simulation frames at 20 Hz, mix of
+      5 hesitate / 5 occluded / 5 no_cross / 4 straight. Track labels came out
+      9 crossed, 5 did not cross, 5 not relevant to the ego; per-frame
+      occlusion 1,750 none, 201 partial, 321 full. Windowed at window=16,
+      lead=30 (1.5 s at 20 Hz), stride=4 this gives 333 windows, 20.4%
+      positive. Counts from that one run, nothing more
+- [x] Boxes checked by drawing them back onto the captured frames
+- [x] Walkers steered directly rather than by `WalkerAIController`: that
+      controller follows the pedestrian navmesh, which does not cover the
+      carriageway away from a marked crosswalk, and produced zero crossings
+- [ ] **Training run on CARLA episodes** — OPEN, and the next thing to do
 - [ ] `carla` added as a source in `pif/data/build.py` so `--config` can point
       at it directly. Right now recordings are loaded through
       `CARLARecordings` by hand
@@ -144,16 +152,16 @@ PIE evaluation is still needed.
       declares only `manylinux_2_28`, so pip refuses it there. System glibc is
       2.39, so nothing is really too old — it is a tagging disagreement. The
       two environments share files on disk and never a process
-- [x] 58 unit tests passing
+- [x] 59 unit tests passing
 - [x] README, HANDOFF, END_GOAL, PROGRESS
 - [ ] CI
 
 ## Known open items, in the order they block things
 
-1. **Collect the first CARLA episodes.** The collector is written and its
-   arithmetic is unit tested, but it has never run against a server. This is
-   the shortest path to a real training run, because it does not wait on
-   anybody's access request.
+1. **Train on the CARLA episodes.** They exist and they window cleanly. This
+   is the shortest path to a real training run, because it does not wait on
+   anybody's access request. Remember to mask the three gesture groups CARLA
+   cannot supervise, and to convert the lead time through the 20 Hz rate.
 2. **Dataset access.** The annotations are in hand; the video clips are not.
    Nothing about real *pedestrians* can be said until they are — a CARLA score
    is a statement about a simulator. This still blocks the gesture branch

@@ -32,6 +32,17 @@ The occluded case matters most: a pedestrian appearing from behind a parked
 vehicle is the failure mode this project documents, and it is the one thing
 that is hard to find enough of in JAAD.
 
+The walkers are steered directly rather than by `WalkerAIController`. That
+controller follows CARLA's pedestrian navmesh, and the navmesh does not cover
+the carriageway except where the map has a marked crosswalk, so a walker asked
+to go to the far pavement walks off to find a crossing instead of stepping into
+the road in front of the ego. Measured, not assumed: with the AI controller not
+one episode produced a crossing. See `step_towards`.
+
+Episodes that come out unusable are thrown away rather than written - a walker
+staged behind a row of parked cars that never gets a clear frame, or one that
+walks into a wall. See `unusable`.
+
 Determinism: synchronous mode, a fixed 0.05 s step (20 Hz), and every random
 seed pinned from --seed. Same seed and same town gives the same episodes.
 """

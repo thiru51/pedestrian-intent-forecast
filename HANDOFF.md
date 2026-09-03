@@ -26,15 +26,16 @@ All of it runs. None of it has seen a real pedestrian video frame.
 - **ONNX export** with a verified numerical round trip.
 - **CARLA collector and parser.** `scripts/collect_carla.py` records scripted
   crossing episodes from a CARLA server; `src/pif/data/carla.py` reads them
-  into the same schema the JAAD and PIE parsers fill. The parser is unit-tested
-  against a committed fixture. The collector has **not yet been run against a
-  live server**, so no episode has been produced and no frame count or timing
-  from it appears anywhere.
-- **58 unit tests**, all passing, none of which need torch, a GPU, CARLA or a
+  into the same schema the JAAD and PIE parsers fill. Both have been run: one
+  collection against a live CARLA 0.9.16 server produced 19 episodes of 20
+  attempted, and those parse and window cleanly. The boxes were checked by
+  drawing them back onto the captured frames.
+- **59 unit tests**, all passing, none of which need torch, a GPU, CARLA or a
   running simulator.
 
-What is **not** real: any accuracy number about pedestrians, any latency number
-on a Jetson, the pose branch on real data, and any CARLA episode. The only end-to-end runs so far
+What is **not** real: any accuracy number about anything. No model has been
+trained on the CARLA episodes yet, the pose branch has never seen real video,
+and no latency has been measured on a Jetson. The only end-to-end runs so far
 are on synthetic sequences fabricated by `src/pif/data/synthetic.py`, which
 exist to exercise the code path and are labelled as such everywhere they
 appear.
@@ -187,13 +188,22 @@ sample against 132,931 `WAITING_TO_CROSS`). That is correct behaviour for a
 forecasting task, but the gesture loss on that group is close to degenerate and
 its accuracy number will look impressive for the wrong reason.
 
-**The CARLA collector has never touched a server.** Everything in it that is
-plain arithmetic — the camera intrinsics and the 3D-to-2D projection — is unit
-tested in the pixi environment. Everything that needs a simulator is not: actor
-spawning, the walker AI controller, the visibility ray casts, and whether the
-scripted scenarios actually put a walker in front of the camera in a given town.
-Expect to debug those on first contact. Run `--episodes 1 --scenario straight`
-first and look at the JSON before launching forty of them.
+**The collector has only been run on Town10HD_Opt.** One collection of 20
+episodes worked there, 19 of which were usable. Other towns lay their pavements
+out differently and the staging may need another pass. Run
+`--episodes 1 --scenario straight` in a new town and look at the JSON before
+launching forty of them.
+
+**About one episode in twenty comes out unusable and is discarded.** Both known
+causes are about where in the town the episode landed: the walker is staged
+behind a row of parked cars and never gets a clear frame, or it cannot move.
+`unusable()` catches both and says which. If the discard rate climbs, that is
+the thing to look at, not the labels.
+
+**`summarise()` reports the lead time in seconds using `FPS = 30`.** On a CARLA
+recording at 20 Hz that number is a third too small. The windows themselves are
+correct - only that one printed field is wrong. It is shared with the JAAD and
+PIE path, so it was left alone rather than special-cased.
 
 **The occlusion measurement depends on `World.cast_ray`.** If the CARLA build
 in use does not have it, the collector says so and records
@@ -249,6 +259,18 @@ downstream can tell a measured label from a filled-in one. The columns stay
 empty and `mask_unlabelled_gestures` makes the loss skip them. The cost is that
 the gesture branch cannot be trained on CARLA at all, which is exactly the
 thing to say out loud: it is why real JAAD and PIE access still matters.
+
+**Why the walkers are not driven by `WalkerAIController`.**
+That is the normal way to move a CARLA pedestrian, and it was the first thing
+tried. It navigates the pedestrian navmesh, and the navmesh does not cover the
+carriageway except where the map has drawn a crosswalk, so a walker told to go
+to the far pavement routes to the nearest crossing instead of stepping into the
+road in front of the ego. In testing it produced zero crossings: the walker
+strolled off down the pavement every time. Setting the walking direction
+directly each frame puts the crossing exactly where the script says it is, and
+makes the hesitation exact - speed to zero on one frame, back up on another.
+The cost is that the walkers do not avoid obstacles, which is why `unusable()`
+throws away episodes where one walked into something.
 
 **Why occlusion comes from ray casts and not from pixel counting.**
 Counting how many pixels of the walker are visible needs a second render and a

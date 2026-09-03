@@ -19,12 +19,12 @@ check.
 | Thing | State |
 | --- | --- |
 | Pipeline (windows -> features -> model -> loss -> metrics -> ONNX) | Implemented, runs end to end |
-| Unit tests | 58 tests, all passing |
+| Unit tests | 59 tests, all passing |
 | JAAD annotation parser | Verified against the real released XML (346 videos) |
 | PIE annotation parser | Verified against the real released zips (53 videos) |
 | CARLA recording parser | Written, unit-tested against a committed fixture |
-| CARLA collector | Written. Not yet run against a live server, see below |
-| Episodes collected from CARLA | **None yet.** No frame counts or timings are quoted anywhere |
+| CARLA collector | Run against a live CARLA 0.9.16 server; 19 of 20 attempted episodes recorded |
+| Training on CARLA episodes | **Has not happened.** The episodes exist, no model has been trained on them |
 | ONNX export + round trip | Verified numerically, see below |
 | Training on real JAAD/PIE video | **Has not happened.** Dataset video clips not yet obtained |
 | Accuracy on real pedestrians | **No such number exists in this repo** |
@@ -638,6 +638,22 @@ the same town give the same episodes. On exception it destroys every actor and
 puts the server back into asynchronous mode; leaving it synchronous makes the
 next run hang in a way that is not obvious.
 
+The walkers are steered directly, not by `WalkerAIController`. That controller
+follows CARLA's pedestrian navmesh, which does not cover the carriageway except
+at a marked crosswalk, so a walker told to go to the far pavement wanders off
+looking for a crossing rather than stepping into the road. With the AI
+controller, not one test episode produced a crossing at all. Setting the
+walking direction each frame also makes the hesitation exact.
+
+Walkers are placed by asking the level what is under each candidate spot,
+stepping outward from the lane until it finds pavement. A fixed offset does not
+work: Town10 parks cars along both kerbs, and a walker spawned on a car roof
+settles on the bodywork and then cannot move.
+
+Episodes that come out unusable are discarded rather than written — a walker
+staged behind a row of parked cars that never gets a clear frame, or one that
+never moves across the frame. The script says which and why.
+
 ### 3. What comes out
 
 One pair of files per episode:
@@ -675,6 +691,27 @@ windows = video_windows(video, window=16, lead=lead_frames(1.5, db.fps(video.vid
 That 20 Hz is easy to trip over. The windowing defaults in `pif.data.windows`
 are in frames and were chosen for 30 fps footage; handing a CARLA recording the
 default `lead=45` silently asks for 2.25 seconds of look-ahead instead of 1.5.
+The same applies to `summarise()`, which converts the lead back to seconds
+through the module-level `FPS = 30` and so under-reports it by a third on
+CARLA. The frames are right; that one printed number is not.
+
+### What has actually been collected
+
+One run against a live CARLA 0.9.16 server on Town10HD_Opt, with
+`--episodes 20 --scenario mixed --no-frames --episode-seconds 14`:
+
+| | |
+| --- | --- |
+| Episodes written | 19 of 20 attempted (one discarded: the walker was hidden for the whole episode) |
+| Simulation frames | 5,320 at 20 Hz |
+| Scenario mix | 5 hesitate, 5 occluded, 5 no_cross, 4 straight |
+| Track crossing labels | 9 crossed, 5 did not, 5 not relevant to the ego |
+| Per-frame occlusion codes | 1,750 none, 201 partial, 321 full |
+| Windows at window=16, lead=30 (1.5 s), stride=4 | 333, 20.4% positive |
+| On disk | 1.2 MB, annotations only |
+
+Those are counts from that run, nothing more. No model has been trained on
+them, so there is still no accuracy number in this repository.
 
 ### 4. What you must not do with it
 
