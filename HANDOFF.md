@@ -24,13 +24,76 @@ All of it runs. None of it has seen a real pedestrian video frame.
 - **Training loop** with AMP, TF32, warmup + cosine, per-epoch JSON history.
 - **Metrics** hand-implemented and tested against worked examples.
 - **ONNX export** with a verified numerical round trip.
-- **37 unit tests**, all passing, none of which need torch or a GPU.
+- **CARLA collector and parser.** `scripts/collect_carla.py` records scripted
+  crossing episodes from a CARLA server; `src/pif/data/carla.py` reads them
+  into the same schema the JAAD and PIE parsers fill. The parser is unit-tested
+  against a committed fixture. The collector has **not yet been run against a
+  live server**, so no episode has been produced and no frame count or timing
+  from it appears anywhere.
+- **58 unit tests**, all passing, none of which need torch, a GPU, CARLA or a
+  running simulator.
 
 What is **not** real: any accuracy number about pedestrians, any latency number
-on a Jetson, and the pose branch on real data. The only end-to-end runs so far
+on a Jetson, the pose branch on real data, and any CARLA episode. The only end-to-end runs so far
 are on synthetic sequences fabricated by `src/pif/data/synthetic.py`, which
 exist to exercise the code path and are labelled as such everywhere they
 appear.
+
+---
+
+## Two environments. Read this before installing anything
+
+There are two python environments and they must stay separate.
+
+| Environment | Python | Holds | Runs |
+| --- | --- | --- | --- |
+| `.pixi/envs/default` | 3.11 | torch, mediapipe, onnx | everything except one script |
+| `.venv-carla` | system 3.12 | `carla`, numpy | `scripts/collect_carla.py` only |
+
+**Do not try to pip install carla into the pixi environment.** It will not
+work, and the error is misleading. The CARLA 0.9.16 wheel is tagged
+`manylinux_2_31`, which is a claim about the oldest glibc (the C library every
+Linux program links against) it will run on. The conda-forge python that pixi
+installs declares support only up to `manylinux_2_28`, so pip decides the
+interpreter is too old and refuses the wheel. The system glibc here is 2.39, so
+nothing is actually too old — it is a tagging disagreement between conda-forge
+and the wheel. There is also no pip inside the pixi environment to argue with.
+
+The two halves never share a process. `collect_carla.py` imports `carla` and
+numpy and nothing else: no torch, no mediapipe, not even `pif`. It writes JSON
+and npz files, and the training side reads them. Keep it that way — the moment
+the collector imports something from the training side, the split stops working
+and the whole CARLA path becomes uninstallable.
+
+---
+
+## Getting CARLA running
+
+```bash
+scripts/fetch_carla.sh                        # 8.3 GB, resumable
+~/carla/CARLA_0.9.16/CarlaUE4.sh -RenderOffScreen   # leave this running
+.venv-carla/bin/python scripts/collect_carla.py --episodes 40 --out-dir data/carla
+```
+
+Then read the episodes back with the pixi python, which is the one that has
+`pif`. See the README section "Getting CARLA data" for the flags, the four
+scenarios, and what the output files contain.
+
+Two things to know before trusting the output:
+
+1. **CARLA runs at 20 Hz, JAAD and PIE at 30 fps.** A lead time in frames does
+   not carry across. Use `pif.data.carla.lead_frames(seconds, fps)`; the
+   `lead=45` default means 1.5 s on JAAD and 2.25 s on CARLA.
+2. **CARLA has no gestures.** The `action`, `look` and `gesture` columns come
+   back empty and the parser refuses to invent them. Call
+   `pif.data.carla.mask_unlabelled_gestures` before training or three of the
+   four gesture heads will be trained against a fallback default the simulator
+   never produced.
+
+The honest framing, which belongs in any writeup: CARLA gives perfect labels
+but is synthetic. Train on CARLA, evaluate on real JAAD and PIE once access
+lands, and report the two numbers separately. A CARLA score is a statement
+about a simulator, not about pedestrians.
 
 ---
 
@@ -124,14 +187,28 @@ sample against 132,931 `WAITING_TO_CROSS`). That is correct behaviour for a
 forecasting task, but the gesture loss on that group is close to degenerate and
 its accuracy number will look impressive for the wrong reason.
 
+**The CARLA collector has never touched a server.** Everything in it that is
+plain arithmetic — the camera intrinsics and the 3D-to-2D projection — is unit
+tested in the pixi environment. Everything that needs a simulator is not: actor
+spawning, the walker AI controller, the visibility ray casts, and whether the
+scripted scenarios actually put a walker in front of the camera in a given town.
+Expect to debug those on first contact. Run `--episodes 1 --scenario straight`
+first and look at the JSON before launching forty of them.
+
+**The occlusion measurement depends on `World.cast_ray`.** If the CARLA build
+in use does not have it, the collector says so and records
+`occlusion_measured: false`, and every walker is written as fully visible. Do
+not read the occlusion column off a recording with that flag set to false.
+
 **No CI.** Tests are run by hand.
 
 **`pixi.toml` lists `scipy` and `tqdm`, which nothing imports.** Harmless, but
 they are not in `requirements.txt` because that file was generated from the
 actual imports. Worth pruning next time the lock file is regenerated.
 
-**`OCCLUSION` in `src/pif/data/schema.py` is unused** — both parsers inline the
-same mapping. Left alone rather than churn the parsers.
+**`OCCLUSION` in `src/pif/data/schema.py` was unused** — the JAAD and PIE
+parsers inline the same mapping. The CARLA parser uses the constant, so it is
+no longer dead, but the other two were left alone rather than churned.
 
 ---
 
@@ -154,6 +231,33 @@ track overlap by 12 of 16 frames. Splitting at window level puts near-copies of
 the same sample on both sides, and every number that comes out is inflated.
 `split_windows` splits on track id, and the JAAD and PIE builders use the
 datasets' own video-level and set-level splits.
+
+**Why the CARLA parser fills the same schema instead of its own format.**
+A simulator recording and a JAAD video have nothing in common at the file
+level, but they answer the same questions: where was the person, were they on
+the road, how much of them could you see. Normalising CARLA into `PedTrack` and
+`VideoAnnotation` means windowing, the feature encoders, the model and the
+training loop are untouched, and a CARLA-trained model can be evaluated on JAAD
+without a second code path. A parallel format would have been quicker to write
+and would have doubled everything downstream.
+
+**Why the CARLA parser leaves the gesture columns empty.**
+It would have been easy to write `action="walking"` whenever the walker's speed
+is above zero. That is a real fact about the simulation, but it is not the
+label the gesture head is supposed to learn, and once it is in the file nobody
+downstream can tell a measured label from a filled-in one. The columns stay
+empty and `mask_unlabelled_gestures` makes the loss skip them. The cost is that
+the gesture branch cannot be trained on CARLA at all, which is exactly the
+thing to say out loud: it is why real JAAD and PIE access still matters.
+
+**Why occlusion comes from ray casts and not from pixel counting.**
+Counting how many pixels of the walker are visible needs a second render and a
+reference for how many pixels an unoccluded walker of that size at that
+distance would have covered, and that reference is a guess. Casting nine rays
+from the camera at the walker's bounding box and counting how many arrive
+unblocked is a direct geometric measurement, so the partial-occlusion code is
+real. If the build has no `cast_ray`, the collector records that it did not
+measure rather than emitting a plausible middle value.
 
 **Why the transformer is hand-written.** `nn.TransformerEncoder` carries mask
 and nested-tensor branching that ONNX export has historically handled badly,

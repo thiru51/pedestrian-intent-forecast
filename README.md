@@ -5,7 +5,8 @@ they step off the kerb**, by combining body pose, gesture and scene context
 instead of waiting for their trajectory to give it away.
 
 The repository contains the full pipeline: parsers for the JAAD and PIE
-annotation releases, a pose feature encoder, a scene-context encoder, a
+annotation releases, a CARLA simulator collector that generates crossing
+scenarios with exact labels, a pose feature encoder, a scene-context encoder, a
 gesture taxonomy modelled on TITAN, a small temporal transformer over 16-frame
 windows, an intent head, a trajectory head, a pose-only baseline for the
 ablation, a training loop, and an ONNX export with a numerical round-trip
@@ -18,9 +19,12 @@ check.
 | Thing | State |
 | --- | --- |
 | Pipeline (windows -> features -> model -> loss -> metrics -> ONNX) | Implemented, runs end to end |
-| Unit tests | 37 tests, all passing |
+| Unit tests | 58 tests, all passing |
 | JAAD annotation parser | Verified against the real released XML (346 videos) |
 | PIE annotation parser | Verified against the real released zips (53 videos) |
+| CARLA recording parser | Written, unit-tested against a committed fixture |
+| CARLA collector | Written. Not yet run against a live server, see below |
+| Episodes collected from CARLA | **None yet.** No frame counts or timings are quoted anywhere |
 | ONNX export + round trip | Verified numerically, see below |
 | Training on real JAAD/PIE video | **Has not happened.** Dataset video clips not yet obtained |
 | Accuracy on real pedestrians | **No such number exists in this repo** |
@@ -33,6 +37,22 @@ numbers verify that the plumbing works. They are **not results**, they are not
 evidence about pedestrians, and they must never be quoted as accuracy. The
 generator says so at length in its own docstring, and the scripts print a
 warning whenever the source is synthetic.
+
+CARLA changes the picture but does not finish it. The simulator produces
+crossing episodes with labels that are exact rather than annotated: the
+walker's 3D bounding box is known, "on the road" is a map query, and how much
+of the person is hidden is measured by casting rays at them. That is real
+training data in a way `synthetic.py` never was. It is still a simulation.
+Simulated people move like a navigation mesh, not like people, and a model that
+does well on CARLA has not been shown to do well on a street. **The plan is to
+train on CARLA and evaluate on real JAAD and PIE once access lands**, and the
+CARLA number and the JAAD number will always be reported separately.
+
+One thing CARLA cannot supply at all: **gestures**. A CARLA walker has no hand
+signals, no gaze target and no phone, so the `action`, `look` and `gesture`
+columns come back empty and the parser refuses to fill them in. Three of the
+four taxonomy groups are therefore unsupervised on CARLA data. That is the
+single clearest reason real JAAD and PIE evaluation still matters.
 
 The model is designed to be deployed on a Jetson-class board via ONNX and
 TensorRT. That is why the exporter exists and why it is verified. On-device
@@ -255,6 +275,9 @@ src/pif/
     schema.py          dataset-neutral PedTrack / TrafficObject / VideoAnnotation
     jaad.py            JAAD parser: five XML trees per video
     pie.py             PIE parser: reads the three zips without unpacking them
+    carla.py           CARLA parser: reads the recordings collect_carla.py
+                       writes, into exactly the same structures. No carla
+                       import anywhere in it
     windows.py         cuts tracks into 16-frame windows with a look-ahead label.
                        This is where "1.5 seconds early" is actually defined
     synthetic.py       fabricated sequences. Plumbing only, not data
@@ -280,6 +303,9 @@ scripts/
   check_gpu.py         run this first: torch/CUDA versions, VRAM, bf16, TF32,
                        and a matmul benchmark
   fetch_external.sh    clone the JAAD and PIE reference repos into external/
+  fetch_carla.sh       download and unpack the CARLA simulator, 8.3 GB
+  collect_carla.py     record scripted crossing episodes from a running CARLA
+                       server. The ONE script that runs in .venv-carla
   parse_annotations.py parse the real XML and print what came out. No torch
   smoke_test.py        the whole path once, on synthetic data
   train.py             train one model
@@ -294,7 +320,8 @@ configs/
   fusion.yaml          the full model
   pose_only.yaml       the ablation target
 
-tests/                 37 tests: taxonomy, features, windowing, metrics
+tests/                 58 tests: taxonomy, features, windowing, metrics, and
+  fixtures/carla/      the CARLA parser against a small committed fixture
 ```
 
 ---
@@ -308,6 +335,45 @@ tests/                 37 tests: taxonomy, features, windowing, metrics
 - Git, and `curl` or `wget`
 
 Two install paths. Pick one.
+
+### Two environments, and why
+
+There are two python environments in this repository and they are deliberately
+kept apart:
+
+| Environment | Python | Holds | Used by |
+| --- | --- | --- | --- |
+| `.pixi/envs/default` | 3.11 | torch, mediapipe, onnx, numpy | everything except one script |
+| `.venv-carla` | system 3.12 | `carla` and numpy, nothing else | `scripts/collect_carla.py` only |
+
+They exist separately because the `carla` package cannot be installed into the
+pixi environment. The reason is worth knowing before you spend an afternoon on
+it. A python wheel for Linux carries a *manylinux* tag, which is a promise
+about the oldest glibc it will run against — glibc is the C library every Linux
+program links to, and `manylinux_2_31` means "needs glibc 2.31 or newer". The
+CARLA 0.9.16 wheel is tagged `manylinux_2_31`. The conda-forge python that pixi
+installs declares itself compatible with `manylinux_2_28` and no higher, so pip
+looks at the wheel, decides the interpreter is too old, and refuses it. It is
+not actually too old: the system glibc here is 2.39, comfortably newer than
+either number. The tag mismatch is a bookkeeping disagreement between
+conda-forge and the wheel, not a real incompatibility. There is also no pip in
+the pixi environment to argue with.
+
+So: `pip install carla` into the pixi environment will fail, and forcing it
+past the check is not worth the risk of a mismatched runtime.
+
+**The two halves never share a process.** `collect_carla.py` imports `carla`
+and numpy and nothing else — no torch, no mediapipe, no `pif`. It writes files.
+Everything on the training side reads those files. That is the entire
+interface, and it is why the split costs nothing.
+
+Setting up the CARLA side, if it is not already there:
+
+```bash
+python3 -m venv .venv-carla
+.venv-carla/bin/pip install carla==0.9.16 numpy
+.venv-carla/bin/python -c "import carla; print('ok')"
+```
 
 ### Path A — pixi (recommended, exact versions)
 
@@ -512,6 +578,120 @@ encodes it with `encode_pose`, and writes one `.npz` keyed
 
 ---
 
+## Getting CARLA data
+
+JAAD and PIE are gated. CARLA is not, and it hands over labels a human
+annotator cannot produce. This is how the project gets real training sequences
+before the dataset access lands.
+
+### 1. Fetch and launch the simulator
+
+```bash
+scripts/fetch_carla.sh                  # 8.3 GB down, ~20 GB unpacked
+~/carla/CARLA_0.9.16/CarlaUE4.sh -RenderOffScreen
+```
+
+`-RenderOffScreen` renders on the GPU but opens no window, which is what you
+want over SSH or on a headless machine. The server listens on port 2000. Leave
+it running in its own terminal; the first launch spends a minute or two
+compiling shaders.
+
+The fetch script resumes a part-finished download, checks the size before
+unpacking, and puts the server in `~/carla` by default. Pass a directory as the
+first argument to put it somewhere else. Nothing it downloads is ever
+committed.
+
+### 2. Collect episodes
+
+```bash
+.venv-carla/bin/python scripts/collect_carla.py \
+    --episodes 40 --out-dir data/carla --seed 0 --scenario mixed
+```
+
+Note the interpreter: `.venv-carla`, not pixi. See "Two environments" above.
+
+| Flag | What it does |
+| --- | --- |
+| `--episodes` | how many to record |
+| `--out-dir` | where the `.json` and `.npz` pairs land (default `data/carla`) |
+| `--seed` | pins python, the walker navigation and the traffic manager |
+| `--scenario` | `straight`, `hesitate`, `occluded`, `no_cross`, or `mixed` |
+| `--town` | which map, e.g. `Town10HD_Opt` |
+| `--headless` | turn the server's rendering off: much faster, annotations only |
+| `--no-frames` | keep the annotations, skip the RGB frames |
+
+The four scenarios:
+
+- **straight** — walks from the near kerb across the ego's lane. The base case.
+- **hesitate** — walks to the kerb, stops for a second or two, then commits.
+  This is the case a purely kinematic predictor gets wrong: velocity drops to
+  zero and the intent does not.
+- **occluded** — starts hidden behind a parked car and steps out into the road.
+  This project documents occlusion as its main failure mode, and this is the
+  only way to get a controlled supply of it.
+- **no_cross** — walks along the far pavement and never enters the ego's lane.
+  A negative that still moves, which is what the model has to separate from a
+  real approach.
+
+Recording runs in synchronous mode at a fixed 0.05 s step, so the same seed and
+the same town give the same episodes. On exception it destroys every actor and
+puts the server back into asynchronous mode; leaving it synchronous makes the
+next run hang in a way that is not obvious.
+
+### 3. What comes out
+
+One pair of files per episode:
+
+```
+data/carla/ep_0000.json    the annotation
+data/carla/ep_0000.npz     RGB frames, uint8 (T, H, W, 3), unless --no-frames
+```
+
+The JSON fills exactly the structures `src/pif/data/schema.py` defines, so
+windowing, features and models do not know or care that it came from a
+simulator:
+
+| Field | Where it comes from |
+| --- | --- |
+| `bbox` | the walker's 3D box projected into the camera, 2D extent taken |
+| `occlusion` | rays cast from the camera at points on the walker, then the existing `{none: 0, part: 1, full: 2}` codes |
+| `cross` | per frame, whether the walker is standing on a driving lane |
+| `crossing` / `crossing_point` | derived by the parser, JAAD's convention exactly: -1 not relevant, 0 did not cross, 1 crossed; and the frame they first stepped into the road, or -1 |
+| `action`, `look`, `gesture` | **empty, on purpose.** CARLA has none of these |
+
+Read them back with the pixi python:
+
+```python
+from pif.data.carla import CARLARecordings, lead_frames
+from pif.data.windows import video_windows
+
+db = CARLARecordings("data/carla")
+video = db.load(db.video_ids()[0])
+# CARLA runs at 20 Hz, JAAD and PIE at 30 fps, so a lead time in frames does
+# not carry across. Convert from seconds.
+windows = video_windows(video, window=16, lead=lead_frames(1.5, db.fps(video.video_id)))
+```
+
+That 20 Hz is easy to trip over. The windowing defaults in `pif.data.windows`
+are in frames and were chosen for 30 fps footage; handing a CARLA recording the
+default `lead=45` silently asks for 2.25 seconds of look-ahead instead of 1.5.
+
+### 4. What you must not do with it
+
+Do not train the gesture head on CARLA data without masking. The shared gesture
+encoder falls back to a default class when a behaviour column is missing, and
+on CARLA every one of those columns is missing, so an unmasked run trains three
+of the four heads towards a label the simulator never produced. Use
+`pif.data.carla.mask_unlabelled_gestures`, which blanks the atomic,
+communicative and transportive groups and keeps only the contextual one — that
+last group is derived from the crossing state, which CARLA does know exactly.
+
+And do not report a CARLA score as a result about pedestrians. It is a result
+about a simulator. The plan stands: train on CARLA, evaluate on real JAAD and
+PIE once access lands, and report the two separately.
+
+---
+
 ## Running things
 
 ### 1. Check the GPU first
@@ -540,15 +720,21 @@ pytest tests -q
 TEST_OUTPUT_PLACEHOLDER
 ```
 
-The tests cover the four things that would silently corrupt every downstream
+The tests cover the five things that would silently corrupt every downstream
 number if they broke: the taxonomy mappings (reorder an enum and every saved
 checkpoint quietly means something different), the pose and context encoders
 (a feature called `torso_lean` that does not move when the torso leans is worse
-than no feature), the windowing rules that make this a forecast, and the
-hand-written metrics (checked against worked examples with known answers).
+than no feature), the windowing rules that make this a forecast, the
+hand-written metrics (checked against worked examples with known answers), and
+the CARLA parser — its crossing-point derivation, the -1/0/1 convention, that
+it invents no gesture labels, and that a CARLA recording flows through the
+existing windowing code untouched.
 
 They need neither torch nor a GPU — `pif.data` deliberately keeps torch off its
-import path so parsing works in a minimal environment.
+import path so parsing works in a minimal environment. They also need neither
+CARLA nor a running simulator: the CARLA tests read a small committed fixture
+under `tests/fixtures/carla`, which is hand-built to exercise the parser and is
+not a capture from a real simulation. Nothing in it is a measurement.
 
 ### 3. Parse the real annotations
 

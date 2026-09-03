@@ -4,7 +4,7 @@ State of the repository. `[x]` means done and checked, `[ ]` means not done.
 Nothing is marked done on the strength of "the code exists" — it has to have
 been run.
 
-Last updated: 2026-08-31.
+Last updated: 2026-09-03.
 
 ## Data
 
@@ -23,6 +23,47 @@ Last updated: 2026-08-31.
 - [ ] **JAAD video clips downloaded** (3.1 GB) — OPEN, blocks everything below
 - [ ] **PIE video clips downloaded** (74 GB) — OPEN
 - [ ] Pose cache built from real clips (`scripts/extract_pose.py`)
+
+### CARLA, the way around the dataset gate
+
+JAAD and PIE video are access-gated. CARLA is a free driving simulator and can
+produce crossing episodes with exact labels, so the project can start training
+before that access lands. The trade is stated everywhere it matters: **CARLA
+gives perfect labels but is synthetic. Train on CARLA, evaluate on real JAAD
+and PIE once access lands, and report the two numbers separately.**
+
+- [x] CARLA recording parser (`src/pif/data/carla.py`), filling the same
+      `PedTrack` / `VideoAnnotation` schema as JAAD and PIE, so nothing
+      downstream changes
+- [x] Crossing label derived to JAAD's convention exactly: -1 not relevant to
+      the ego, 0 did not cross, 1 crossed, and `crossing_point` as the frame
+      number they first entered the road or -1
+- [x] Occlusion mapped onto the existing `{none: 0, part: 1, full: 2}` codes,
+      from a ray-cast visibility measurement rather than a guess
+- [x] Collector (`scripts/collect_carla.py`): synchronous mode, fixed 0.05 s
+      step, fixed seed, ego with an RGB camera whose intrinsics are recorded,
+      walkers on `WalkerAIController`, four scripted scenarios (straight,
+      hesitate at the kerb, step out from behind a parked car, never cross),
+      and teardown that destroys every actor and restores async mode on
+      exception
+- [x] `scripts/fetch_carla.sh` to download and unpack the 8.3 GB server
+- [x] Parser tests that run in the pixi environment with no carla installed and
+      no server, against a small committed fixture
+- [ ] **Episodes actually collected from a running server** — OPEN. The
+      collector has never talked to a live CARLA. No frame count, episode
+      count or timing from it is quoted anywhere in this repository
+- [ ] Training run on CARLA episodes
+- [ ] `carla` added as a source in `pif/data/build.py` so `--config` can point
+      at it directly. Right now recordings are loaded through
+      `CARLARecordings` by hand
+
+**Gestures are the one thing CARLA cannot supply.** A CARLA walker has no hand
+signals, no gaze target and no phone, so `action`, `look` and `gesture` come
+back empty and the parser refuses to fill them. Three of the four taxonomy
+groups are unsupervised on CARLA data; use
+`pif.data.carla.mask_unlabelled_gestures` so the loss skips them instead of
+learning a fallback default. This is the clearest single reason real JAAD and
+PIE evaluation is still needed.
 
 ## Features
 
@@ -95,23 +136,35 @@ Last updated: 2026-08-31.
 - [x] `requirements.txt` for the venv + pip path, generated from real imports
 - [x] Dockerfile
 - [x] `scripts/fetch_external.sh` to re-clone the JAAD and PIE reference repos
+- [x] `scripts/fetch_carla.sh` to fetch and unpack the simulator
 - [x] `external/` git-ignored, never committed
-- [x] 37 unit tests passing
+- [x] The CARLA server, its tarball and collected episodes git-ignored too
+- [x] Second environment `.venv-carla` for the collector, because the carla
+      wheel is tagged `manylinux_2_31` and the conda-forge python pixi installs
+      declares only `manylinux_2_28`, so pip refuses it there. System glibc is
+      2.39, so nothing is really too old — it is a tagging disagreement. The
+      two environments share files on disk and never a process
+- [x] 58 unit tests passing
 - [x] README, HANDOFF, END_GOAL, PROGRESS
 - [ ] CI
 
 ## Known open items, in the order they block things
 
-1. **Dataset access.** The annotations are in hand; the video clips are not.
-   Nothing about real pedestrians can be said until they are. This blocks pose
-   extraction, which blocks training, which blocks the ablation, which is the
-   whole point.
-2. **No Jetson.** The ONNX file is verified numerically but has never run on
+1. **Collect the first CARLA episodes.** The collector is written and its
+   arithmetic is unit tested, but it has never run against a server. This is
+   the shortest path to a real training run, because it does not wait on
+   anybody's access request.
+2. **Dataset access.** The annotations are in hand; the video clips are not.
+   Nothing about real *pedestrians* can be said until they are — a CARLA score
+   is a statement about a simulator. This still blocks the gesture branch
+   entirely, since CARLA has no gesture labels at all.
+3. **No Jetson.** The ONNX file is verified numerically but has never run on
    the target class of device.
-3. **`transportive` is barely supervised.** JAAD only annotates it for the
+4. **`transportive` is barely supervised.** JAAD only annotates it for the
    high-visibility subset, PIE not at all. The head exists to keep the taxonomy
    faithful to TITAN, and the loss ignores it where there is no label — but on
    PIE it will train on nothing.
-4. **The ego corridor is a fixed wedge**, not a calibrated projection. PIE
+5. **The ego corridor is a fixed wedge**, not a calibrated projection. PIE
    ships camera parameters; JAAD does not. Good enough as a stand-in, and it
-   should be replaced with the real thing for PIE.
+   should be replaced with the real thing for PIE. CARLA recordings carry real
+   camera intrinsics, so for those it could be replaced outright.
