@@ -108,6 +108,18 @@ _RAY_NEAR_CLIP = 1.2
 _RAY_TARGET_MARGIN = 0.35
 
 
+def pick_blueprint(blueprints, wanted: str, fallback: str):
+    """A named vehicle if the build has it, otherwise the first of a family.
+
+    Blueprint names come and go between CARLA releases, and an IndexError three
+    minutes into a collection run is a poor way to find that out.
+    """
+    found = blueprints.filter(wanted)
+    if found:
+        return found[0]
+    return blueprints.filter(fallback)[0]
+
+
 def occluder_tags() -> set:
     labels = carla.CityObjectLabel
     return {getattr(labels, n) for n in _OCCLUDER_TAG_NAMES if hasattr(labels, n)}
@@ -192,6 +204,31 @@ def sample_points(actor) -> list:
             )
         )
     return out
+
+
+def box_overlap_fraction(box, occluders) -> float:
+    """Fraction of a 2D box hidden behind nearer boxes.
+
+    This backs up the ray casting. `World.cast_ray` reports the level geometry,
+    and depending on the build it may not see spawned vehicles at all - which
+    would make the parked car in the "occluded" scenario invisible to the
+    measurement, and that scenario is the point of the exercise. Comparing the
+    projected boxes catches it either way.
+
+    Two approximations, both of which under-report: the boxes are axis-aligned,
+    so a car's box covers a little more than the car does, and overlapping
+    occluders are taken one at a time rather than unioned.
+    """
+    x1, y1, x2, y2 = box
+    area = max((x2 - x1) * (y2 - y1), 1e-6)
+    worst = 0.0
+    for ox1, oy1, ox2, oy2 in occluders:
+        w = min(x2, ox2) - max(x1, ox1)
+        h = min(y2, oy2) - max(y1, oy1)
+        if w <= 0.0 or h <= 0.0:
+            continue
+        worst = max(worst, (w * h) / area)
+    return min(worst, 1.0)
 
 
 def visible_fraction(world, camera_location, actor, tags) -> float:
@@ -496,7 +533,7 @@ def run_episode(world, args, episode: int, scenario: str):
             print(f"  episode {episode}: no straight stretch found, skipping")
             return None
 
-        vehicle_bp = blueprints.filter("vehicle.tesla.model3")[0]
+        vehicle_bp = pick_blueprint(blueprints, "vehicle.tesla.model3", "vehicle.*")
         ego = world.try_spawn_actor(vehicle_bp, start)
         if ego is None:
             print(f"  episode {episode}: could not spawn the ego vehicle, skipping")
@@ -507,7 +544,6 @@ def run_episode(world, args, episode: int, scenario: str):
         camera_bp.set_attribute("image_size_x", str(args.width))
         camera_bp.set_attribute("image_size_y", str(args.height))
         camera_bp.set_attribute("fov", str(args.fov))
-        camera_bp.set_attribute("sensor_tick", str(FIXED_DELTA))
         camera_transform = carla.Transform(carla.Location(x=1.5, z=1.6))
         camera = world.spawn_actor(camera_bp, camera_transform, attach_to=ego)
         stage.sensors.append(camera)
@@ -534,7 +570,7 @@ def run_episode(world, args, episode: int, scenario: str):
         traffic_entries: list[dict] = []
         parked = None
         if scenario == "occluded":
-            parked_bp = blueprints.filter("vehicle.audi.a2")[0]
+            parked_bp = pick_blueprint(blueprints, "vehicle.audi.a2", "vehicle.*")
             parked = world.try_spawn_actor(
                 parked_bp, parked_vehicle_transform(anchor, lane_width)
             )
@@ -599,6 +635,10 @@ def run_episode(world, args, episode: int, scenario: str):
             if not args.headless:
                 images.get(timeout=args.timeout)
 
+        # Fetched once: nothing spawns or despawns during an episode, and this
+        # is an RPC to the server.
+        vehicles = [v for v in world.get_actors().filter("vehicle.*") if v.id != ego.id]
+
         frames: list[np.ndarray] = []
         ego_rows: dict[str, dict] = {}
         scene_rows: dict[str, dict] = {}
@@ -649,13 +689,21 @@ def run_episode(world, args, episode: int, scenario: str):
                 "traffic_light": traffic_light_state(ego),
             }
 
-            if parked is not None and traffic_entries:
-                box = actor_box_2d(
-                    parked, world_to_camera, k, args.width, args.height
+            # Vehicle boxes, with how far away they are, so a walker behind one
+            # can be told from a walker in front of one.
+            vehicle_boxes = []
+            for other in vehicles:
+                other_box = actor_box_2d(
+                    other, world_to_camera, k, args.width, args.height
                 )
-                if box is not None:
+                if other_box is None:
+                    continue
+                vehicle_boxes.append(
+                    (camera_location.distance(other.get_location()), other_box)
+                )
+                if parked is not None and traffic_entries and other.id == parked.id:
                     traffic_entries[0]["frames"].append(frame)
-                    traffic_entries[0]["bbox"].append(box)
+                    traffic_entries[0]["bbox"].append(other_box)
 
             for plan in plans:
                 box = actor_box_2d(
@@ -665,8 +713,11 @@ def run_episode(world, args, episode: int, scenario: str):
                     continue  # off frame entirely: no annotation for this frame
                 location = plan.actor.get_location()
                 if args.measure_occlusion:
-                    visible = visible_fraction(
-                        world, camera_location, plan.actor, tags
+                    distance = camera_location.distance(location)
+                    nearer = [b for d, b in vehicle_boxes if d < distance]
+                    visible = min(
+                        visible_fraction(world, camera_location, plan.actor, tags),
+                        1.0 - box_overlap_fraction(box, nearer),
                     )
                 else:
                     visible = 1.0

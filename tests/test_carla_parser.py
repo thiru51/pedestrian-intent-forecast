@@ -311,3 +311,16 @@ def test_projection_uses_the_unreal_axis_convention():
     assert pixels[0] == pytest.approx([640.0, 360.0])
     assert pixels[1][0] > pixels[0][0]   # right in the world is right in frame
     assert pixels[2][1] < pixels[0][1]   # up in the world is up in frame
+
+
+def test_box_overlap_fraction_backs_up_the_ray_casts():
+    """The second occlusion measurement in the collector: how much of a
+    walker's box is hidden behind a nearer vehicle's box."""
+    from scripts.collect_carla import box_overlap_fraction
+
+    walker = (0.0, 0.0, 10.0, 10.0)
+    assert box_overlap_fraction(walker, []) == 0.0
+    assert box_overlap_fraction(walker, [(20.0, 20.0, 30.0, 30.0)]) == 0.0
+    assert box_overlap_fraction(walker, [(5.0, 0.0, 15.0, 10.0)]) == pytest.approx(0.5)
+    # Fully behind something: capped at 1, never above it.
+    assert box_overlap_fraction(walker, [(-5.0, -5.0, 15.0, 15.0)]) == 1.0
