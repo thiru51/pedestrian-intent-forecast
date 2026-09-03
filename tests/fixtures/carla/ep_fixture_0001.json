@@ -1,0 +1,514 @@
+{
+ "format": "pif-carla-recording",
+ "version": 1,
+ "note": "Hand-built fixture in the collector's output format. It was NOT captured from a running CARLA server: the numbers are chosen to exercise the parser, not measured from a simulation. Do not quote anything from this file as a result.",
+ "episode_id": "ep_fixture_0001",
+ "dataset": "carla",
+ "town": "Town10HD_Opt",
+ "scenario": "straight",
+ "seed": 1,
+ "fps": 20.0,
+ "fixed_delta_seconds": 0.05,
+ "width": 32,
+ "height": 24,
+ "num_frames": 24,
+ "road_type": "street",
+ "camera": {
+  "fov": 90.0,
+  "fx": 16.0,
+  "fy": 16.0,
+  "cx": 16.0,
+  "cy": 12.0,
+  "location_in_ego": [
+   1.5,
+   0.0,
+   1.6
+  ],
+  "rotation_in_ego": [
+   0.0,
+   0.0,
+   0.0
+  ]
+ },
+ "frames_file": "ep_fixture_0001.npz",
+ "ego": {
+  "0": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "1": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "2": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "3": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "4": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "5": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "6": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "7": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "8": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "9": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "10": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "11": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "12": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "13": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "14": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "15": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "16": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "17": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "18": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "19": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "20": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "21": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "22": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  },
+  "23": {
+   "speed_mps": 4.0,
+   "action": "moving_slow"
+  }
+ },
+ "scene": {
+  "0": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "1": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "2": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "3": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "4": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "5": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "6": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "7": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "8": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "9": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "10": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "11": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "12": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "13": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "14": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "15": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "16": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "17": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "18": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "19": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "20": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "21": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "22": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "23": {
+   "ped_crossing": 1,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  }
+ },
+ "walkers": [
+  {
+   "ped_id": "ep_fixture_0001_w0",
+   "scenario": "straight",
+   "ego_relevant": true,
+   "frames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "bbox": [
+    [
+     20.0,
+     6.0,
+     24.0,
+     20.0
+    ],
+    [
+     19.6,
+     6.0,
+     23.6,
+     20.0
+    ],
+    [
+     19.2,
+     6.0,
+     23.2,
+     20.0
+    ],
+    [
+     18.8,
+     6.0,
+     22.8,
+     20.0
+    ],
+    [
+     18.4,
+     6.0,
+     22.4,
+     20.0
+    ],
+    [
+     18.0,
+     6.0,
+     22.0,
+     20.0
+    ],
+    [
+     17.6,
+     6.0,
+     21.6,
+     20.0
+    ],
+    [
+     17.2,
+     6.0,
+     21.2,
+     20.0
+    ],
+    [
+     16.8,
+     6.0,
+     20.8,
+     20.0
+    ],
+    [
+     16.4,
+     6.0,
+     20.4,
+     20.0
+    ],
+    [
+     16.0,
+     6.0,
+     20.0,
+     20.0
+    ],
+    [
+     15.6,
+     6.0,
+     19.6,
+     20.0
+    ],
+    [
+     15.2,
+     6.0,
+     19.2,
+     20.0
+    ],
+    [
+     14.8,
+     6.0,
+     18.8,
+     20.0
+    ],
+    [
+     14.399999999999999,
+     6.0,
+     18.4,
+     20.0
+    ],
+    [
+     14.0,
+     6.0,
+     18.0,
+     20.0
+    ],
+    [
+     13.6,
+     6.0,
+     17.6,
+     20.0
+    ],
+    [
+     13.2,
+     6.0,
+     17.2,
+     20.0
+    ],
+    [
+     12.8,
+     6.0,
+     16.8,
+     20.0
+    ],
+    [
+     12.399999999999999,
+     6.0,
+     16.4,
+     20.0
+    ],
+    [
+     12.0,
+     6.0,
+     16.0,
+     20.0
+    ],
+    [
+     11.6,
+     6.0,
+     15.6,
+     20.0
+    ],
+    [
+     11.2,
+     6.0,
+     15.2,
+     20.0
+    ],
+    [
+     10.799999999999999,
+     6.0,
+     14.799999999999999,
+     20.0
+    ]
+   ],
+   "visible_fraction": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "cross": [
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing"
+   ],
+   "attributes": {
+    "num_lanes": 2,
+    "signalized": "n/a"
+   }
+  }
+ ],
+ "traffic": []
+}
