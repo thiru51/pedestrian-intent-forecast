@@ -324,3 +324,68 @@ def test_box_overlap_fraction_backs_up_the_ray_casts():
     assert box_overlap_fraction(walker, [(5.0, 0.0, 15.0, 10.0)]) == pytest.approx(0.5)
     # Fully behind something: capped at 1, never above it.
     assert box_overlap_fraction(walker, [(-5.0, -5.0, 15.0, 15.0)]) == 1.0
+
+
+# --------------------------------------------------------------------------
+# Wiring into the dataset builder.
+# --------------------------------------------------------------------------
+
+
+def test_build_splits_by_episode_and_masks_gestures():
+    """Two things that would each quietly ruin a result.
+
+    A window-level split leaks: consecutive windows share 12 of their 16
+    frames, so the same pedestrian would sit on both sides and the score would
+    be inflated. And an unmasked gesture column trains three of the four heads
+    against a default class CARLA never produced.
+    """
+    from pif.config import DataConfig
+    from pif.data.build import build
+
+    cfg = DataConfig(
+        source="carla",
+        root=str(FIXTURES),
+        window=8,
+        lead=4,
+        stride=4,
+        horizon=4,
+        val_fraction=0.5,
+    )
+    train, val = build(cfg)
+    assert train and val
+
+    train_episodes = {w.video_id for w in train}
+    val_episodes = {w.video_id for w in val}
+    assert not (train_episodes & val_episodes)
+    assert train_episodes | val_episodes == {"ep_fixture_0000", "ep_fixture_0001"}
+
+    gestures = np.stack([w.gesture for w in train + val])
+    for i, group in enumerate(GESTURE_GROUPS):
+        if group in UNLABELLED_GESTURE_GROUPS:
+            assert (gestures[:, :, i] == IGNORE_INDEX).all(), group
+        else:
+            assert (gestures[:, :, i] != IGNORE_INDEX).any(), group
+
+
+def test_build_rejects_a_directory_with_no_recordings(tmp_path):
+    from pif.config import DataConfig
+    from pif.data.build import MissingAnnotations, build
+
+    with pytest.raises(MissingAnnotations, match="no CARLA recordings"):
+        build(DataConfig(source="carla", root=str(tmp_path)))
+
+
+def test_occlusion_mask_selects_the_windows_that_were_hidden(video):
+    """The ablation reports the occluded subset separately, so the mask that
+    defines it has to pick out exactly the windows with a non-zero occlusion
+    channel."""
+    from pif.features.context import CTX
+    from scripts.run_ablation import occlusion_mask
+
+    windows = video_windows(video, window=16, lead=30, stride=4)
+    mask = occlusion_mask(windows)
+    assert mask.any() and not mask.all()
+    for w, hidden in zip(windows, mask):
+        assert (w.context[:, CTX["occlusion"]].max() > 0.0) == bool(hidden)
+    # The occluded episode's walker is the one that was behind the parked car.
+    assert {w.ped_id for w, m in zip(windows, mask) if m} == {"ep_fixture_0000_w2"}

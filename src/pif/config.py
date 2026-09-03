@@ -21,8 +21,8 @@ from .train.loop import TrainConfig
 
 @dataclass
 class DataConfig:
-    source: str = "synthetic"        # synthetic | jaad | pie
-    root: str = ""                   # external/jaad or external/pie
+    source: str = "synthetic"        # synthetic | jaad | pie | carla
+    root: str = ""                   # external/jaad, external/pie or data/carla
     split_subset: str = "default"    # JAAD split_ids subdirectory
     window: int = DEFAULT_WINDOW
     lead: int = DEFAULT_LEAD

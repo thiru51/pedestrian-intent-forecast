@@ -1,16 +1,24 @@
 """One entry point that turns a DataConfig into train/val window lists.
 
-Handles all three sources the same way so nothing above this layer needs to
-know which one it got:
+Handles every source the same way so nothing above this layer needs to know
+which one it got:
 
   synthetic  generated in memory, split by synthetic track id
   jaad       parsed from external/jaad XML, split by JAAD's own split_ids files
   pie        parsed from the zips in external/pie/annotations, split by set
+  carla      recordings from scripts/collect_carla.py, split by episode
 
 Pose is the one thing that differs. JAAD and PIE ship annotations, not frames,
 so unless a pose cache built from the video files is provided the pose channel
-is zeros and the fused model is running on context and gesture alone. The
-loaders say so out loud rather than quietly training on a dead branch.
+is zeros and the fused model is running on context and gesture alone. CARLA
+records its own frames, so a pose cache for it is built by
+scripts/extract_pose.py --dataset carla. The loaders say so out loud rather
+than quietly training on a dead branch.
+
+Every split here is by video or episode, never by window. Consecutive windows
+from one track share 12 of their 16 frames, so a window-level split puts near
+copies of the same sample on both sides and every number that comes out is
+inflated.
 """
 
 from __future__ import annotations
@@ -19,6 +27,7 @@ from pathlib import Path
 
 import numpy as np
 
+from .carla import CARLARecordings, mask_unlabelled_gestures
 from .jaad import JAADAnnotations
 from .pie import PIEAnnotations
 from .synthetic import make_windows, split_windows
@@ -107,23 +116,65 @@ def build_pie(cfg, pose_cache: str | Path | None = None) -> tuple[list[Window], 
     )
 
 
-def _windows_for(db, video_ids, cfg, poses) -> list[Window]:
+def build_carla(cfg, pose_cache: str | Path | None = None) -> tuple[list[Window], list[Window]]:
+    """CARLA episodes, split by episode.
+
+    An episode is one ego run with its own walkers, so it is the natural unit:
+    two windows from the same episode share the same pedestrian, the same
+    lighting and the same stretch of road, and separating them would leak.
+
+    The split is a deterministic interleave rather than "first 75% of the
+    sorted ids". Episodes are written in scenario order (straight, hesitate,
+    occluded, no_cross, repeating), so a contiguous cut would hand the
+    validation set a different scenario mix from the training set and the
+    comparison would be measuring that instead of the model.
+    """
+    root = Path(cfg.root or "data/carla")
+    if not root.is_dir() or not list(root.glob("*.json")):
+        raise MissingAnnotations(
+            f"no CARLA recordings under {root}. Collect some first: see the "
+            "README section 'Getting CARLA data'."
+        )
+    db = CARLARecordings(root)
+    poses = _load_pose_cache(pose_cache)
+
+    ids = db.video_ids()
+    if cfg.max_videos:
+        ids = ids[: cfg.max_videos]
+
+    every = max(int(round(1.0 / max(cfg.val_fraction, 1e-6))), 2)
+    val_ids = [v for i, v in enumerate(ids) if i % every == every - 1]
+    train_ids = [v for v in ids if v not in set(val_ids)]
+
+    return (
+        _windows_for(db, train_ids, cfg, poses, carla=True),
+        _windows_for(db, val_ids, cfg, poses, carla=True),
+    )
+
+
+def _windows_for(db, video_ids, cfg, poses, carla: bool = False) -> list[Window]:
     out: list[Window] = []
     for vid in video_ids:
         try:
             video = db.load(vid)
         except FileNotFoundError:
             continue
-        out.extend(
-            video_windows(
-                video,
-                window=cfg.window,
-                lead=cfg.lead,
-                stride=cfg.stride,
-                horizon=cfg.horizon,
-                pose_by_ped=poses.get(vid),
-            )
+        windows = video_windows(
+            video,
+            window=cfg.window,
+            lead=cfg.lead,
+            stride=cfg.stride,
+            horizon=cfg.horizon,
+            pose_by_ped=poses.get(vid),
         )
+        if carla:
+            # CARLA annotates no gestures, gaze or actions. The shared encoder
+            # falls back to a default class for a missing column, so without
+            # this the gesture head would be trained against three labels the
+            # simulator never produced.
+            for w in windows:
+                mask_unlabelled_gestures(w.gesture)
+        out.extend(windows)
     return out
 
 
@@ -145,4 +196,6 @@ def build(cfg, pose_cache: str | Path | None = None) -> tuple[list[Window], list
         return build_jaad(cfg, pose_cache)
     if source == "pie":
         return build_pie(cfg, pose_cache)
+    if source == "carla":
+        return build_carla(cfg, pose_cache)
     raise ValueError(f"unknown data source '{cfg.source}'")

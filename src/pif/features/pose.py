@@ -7,9 +7,14 @@ bounding-box-normalised coordinates plus a handful of derived angles.
 Two things get their own joint layout otherwise:
 
   MediaPipe Pose (BlazePose, 33 landmarks) is what this repo runs by default.
-  It is CPU-real-time on one core, needs no weights download beyond the small
-  tflite bundle that ships with the wheel, and that makes it the right thing
-  for getting the pipeline honest end to end.
+  It is CPU-real-time on one core, which makes it the right thing for getting
+  the pipeline honest end to end.
+
+  Two generations of the MediaPipe API are in the wild and PoseExtractor below
+  handles both. Up to 0.10.x the model shipped inside the wheel and
+  `mp.solutions.pose` loaded it. From 1.0 that module is gone, replaced by
+  `mp.tasks.vision.PoseLandmarker`, and the weights are no longer bundled: a
+  .task file has to be on disk. See PoseExtractor for where it is looked for.
 
   HRNet-W32 (Sun et al., CVPR 2019) is what I would swap in for serving. It is
   top-down (needs the detector box we already have from tracking), outputs the
@@ -181,39 +186,115 @@ class PoseExtractor:
     Constructed lazily: importing mediapipe pulls in a large native library and
     nothing in the synthetic-data path or the tests needs it, so a machine
     without it working can still run everything except real video.
+
+    Supports both MediaPipe generations, because which one is installed decides
+    whether a weights file is needed:
+
+      mediapipe <= 0.10.x   `mp.solutions.pose`, weights bundled in the wheel
+      mediapipe >= 1.0      `mp.tasks.vision.PoseLandmarker`, weights are a
+                            separate .task file that has to be on disk
+
+    For the second, the file is looked for at `model_path`, then at
+    $PIF_POSE_MODEL, then at data/pose_landmarker.task. The landmark layout is
+    the same 33-point BlazePose skeleton either way, so MEDIAPIPE_TO_COCO maps
+    both and nothing downstream can tell which ran.
     """
 
-    def __init__(self, model_complexity: int = 1, min_confidence: float = 0.4):
+    DEFAULT_MODEL = "data/pose_landmarker.task"
+
+    def __init__(
+        self,
+        model_complexity: int = 1,
+        min_confidence: float = 0.4,
+        model_path: str | None = None,
+    ):
         self.model_complexity = model_complexity
         self.min_confidence = min_confidence
+        self.model_path = model_path
         self._pose = None
+        self._api = ""
+
+    def _model_file(self) -> str:
+        import os
+
+        for candidate in (
+            self.model_path,
+            os.environ.get("PIF_POSE_MODEL"),
+            self.DEFAULT_MODEL,
+        ):
+            if candidate and os.path.isfile(candidate):
+                return candidate
+        raise FileNotFoundError(
+            "MediaPipe 1.x needs a pose model file and none was found. Looked "
+            f"at $PIF_POSE_MODEL and {self.DEFAULT_MODEL}. Fetch one with "
+            "scripts/fetch_pose_model.sh, or point --pose-model at an existing "
+            "pose_landmarker .task bundle."
+        )
 
     def _ensure(self):
-        if self._pose is None:
-            try:
-                import mediapipe as mp
-            except ImportError as exc:  # pragma: no cover - depends on install
-                raise ImportError(
-                    "mediapipe is needed to run pose extraction on real video. "
-                    "pip install mediapipe, or use the synthetic path which "
-                    "does not need it."
-                ) from exc
+        if self._pose is not None:
+            return self._pose
+        try:
+            import mediapipe as mp
+        except ImportError as exc:  # pragma: no cover - depends on install
+            raise ImportError(
+                "mediapipe is needed to run pose extraction on real video. "
+                "pip install mediapipe, or use the synthetic path which "
+                "does not need it."
+            ) from exc
+
+        if hasattr(mp, "solutions"):
+            self._api = "solutions"
             self._pose = mp.solutions.pose.Pose(
                 static_image_mode=False,
                 model_complexity=self.model_complexity,
                 min_detection_confidence=self.min_confidence,
                 min_tracking_confidence=self.min_confidence,
             )
+            return self._pose
+
+        from mediapipe.tasks import python as mp_python
+        from mediapipe.tasks.python import vision
+
+        self._api = "tasks"
+        self._pose = vision.PoseLandmarker.create_from_options(
+            vision.PoseLandmarkerOptions(
+                base_options=mp_python.BaseOptions(
+                    model_asset_path=self._model_file()
+                ),
+                # IMAGE rather than VIDEO: the crops handed in are separate
+                # pedestrians from separate boxes, not one continuous person,
+                # so the tracker between frames would be tracking the wrong
+                # thing.
+                running_mode=vision.RunningMode.IMAGE,
+                num_poses=1,
+                min_pose_detection_confidence=self.min_confidence,
+                min_pose_presence_confidence=self.min_confidence,
+            )
+        )
         return self._pose
 
     def __call__(self, crop: np.ndarray) -> PoseFrame | None:
         """crop is the RGB pedestrian patch, already cut out of the frame with
         the annotation box. Returns None when nothing was detected."""
-        result = self._ensure().process(crop)
-        landmarks = getattr(result, "pose_landmarks", None)
-        if landmarks is None:
-            return None
-        pts = landmarks.landmark
+        pose = self._ensure()
+        if self._api == "solutions":
+            result = pose.process(crop)
+            landmarks = getattr(result, "pose_landmarks", None)
+            if landmarks is None:
+                return None
+            pts = landmarks.landmark
+        else:
+            import mediapipe as mp
+
+            image = mp.Image(
+                image_format=mp.ImageFormat.SRGB, data=np.ascontiguousarray(crop)
+            )
+            result = pose.detect(image)
+            if not result.pose_landmarks:
+                return None
+            pts = result.pose_landmarks[0]
+
         xy = np.array(
             [[pts[i].x, pts[i].y] for i in MEDIAPIPE_TO_COCO], dtype=np.float32
         )

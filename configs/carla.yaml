@@ -1,0 +1,67 @@
+# Training on CARLA recordings.
+#
+# Same model as configs/fusion.yaml. What differs is the data block, and one
+# number in it is the easy thing to get wrong.
+#
+# CARLA records at 20 Hz. JAAD and PIE are 30 fps. Every window setting here is
+# counted in frames, so the same number means a different amount of time in the
+# two sources:
+#
+#   lead 45 frames = 1.5 s on JAAD, but 2.25 s on CARLA
+#   lead 30 frames = 1.5 s on CARLA
+#
+# 30 is used below so this config forecasts the same 1.5 seconds the rest of
+# the project talks about. window and horizon are left at the JAAD values in
+# frames, so the observation is 0.8 s here against 0.53 s there, and the
+# regressed trajectory is 0.75 s against 0.5 s. That is a deliberate choice to
+# keep the frame counts the model sees identical between sources, so the same
+# exported graph serves both.
+#
+# What this data cannot supervise: gestures. CARLA has no hand signals, no gaze
+# target and no phone, so pif.data.build masks the atomic, communicative and
+# transportive groups out of the loss. Only the contextual group survives, and
+# inside a window it is nearly constant, because windows stop at the moment the
+# pedestrian steps into the road. The gesture loss weight is kept non-zero so
+# the head still exists and still exports, but it is not learning much here.
+name: carla_fusion
+model_type: fusion
+
+data:
+  source: carla
+  root: data/carla_run
+  window: 16             # observation length in frames (0.80 s at 20 Hz)
+  lead: 30               # forecast horizon in frames (1.50 s at 20 Hz)
+  stride: 4              # window step
+  horizon: 15            # future trajectory steps the GRU regresses (0.75 s)
+  val_fraction: 0.25     # held out BY EPISODE, never by window
+  seed: 0
+  max_videos: 0          # 0 = every episode collected
+
+model:
+  d_model: 128
+  n_layers: 3
+  n_heads: 4
+  mlp_ratio: 2.0
+  dropout: 0.1
+  gesture_hidden: 96
+  intent_hidden: 64
+  traj_hidden: 64
+  use_context: true
+  use_gesture: true
+  fuse_trajectory: true
+
+train:
+  epochs: 30
+  lr: 0.0003
+  weight_decay: 0.01
+  grad_clip: 1.0
+  warmup_epochs: 2
+
+loss:
+  intent: 1.0
+  trajectory: 0.5
+  gesture: 0.3
+
+batch_size: 0    # 0 = auto-scale from detected VRAM
+num_workers: -1  # -1 = auto from os.cpu_count()
+out_dir: artifacts

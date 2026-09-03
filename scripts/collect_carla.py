@@ -554,7 +554,7 @@ def parked_vehicle_transform(anchor, lane_width: float):
 # --------------------------------------------------------------------------
 
 
-def advance(world, images, args):
+def advance(world, images, capture: bool, timeout: float):
     """Step the simulation once and return the image belonging to that step.
 
     Two things this gets right that a bare `world.tick()` does not. The sensor
@@ -564,10 +564,10 @@ def advance(world, images, args):
     which would otherwise pile up and put the whole recording a few frames out.
     """
     frame_id = world.tick()
-    if args.headless:
+    if not capture:
         return None
     while True:
-        image = images.get(timeout=args.timeout)
+        image = images.get(timeout=timeout)
         if image.frame >= frame_id:
             return image
 
@@ -621,7 +621,13 @@ def run_episode(world, args, episode: int, scenario: str):
     world.set_pedestrians_seed(args.seed + episode)
 
     total_frames = int(round(args.episode_seconds / FIXED_DELTA))
-    save_frames = args.frames and not args.headless
+    # Whether frames are saved is decided by --frames alone. It used to also
+    # depend on --headless, on the assumption that no_rendering_mode stops an
+    # RGB camera producing images. Measured on this build, it does not: with
+    # no_rendering_mode on, the camera still delivered a full set of images
+    # with real, changing scene content. The gate was throwing frames away for
+    # no reason.
+    save_frames = bool(args.frames)
     tags = occluder_tags()
 
     with Stage(world, original_settings) as stage:
@@ -660,7 +666,7 @@ def run_episode(world, args, episode: int, scenario: str):
         # transform is what the 3D-to-2D projection is measured against. It
         # just does not deliver images in that mode, so nothing listens.
         images: queue.Queue = queue.Queue()
-        if not args.headless:
+        if save_frames:
             camera.listen(images.put)
         k = intrinsics(args.width, args.height, args.fov)
 
@@ -736,7 +742,7 @@ def run_episode(world, args, episode: int, scenario: str):
         for _ in range(args.warmup_frames):
             for plan in plans:
                 step_towards(plan.actor, plan.destination, 0.0)
-            advance(world, images, args)
+            advance(world, images, save_frames, args.timeout)
 
         # Fetched once: nothing spawns or despawns during an episode, and this
         # is an RPC to the server.
@@ -763,7 +769,7 @@ def run_episode(world, args, episode: int, scenario: str):
                     0.0 if (waiting or paused) else plan.speed,
                 )
 
-            image = advance(world, images, args)
+            image = advance(world, images, save_frames, args.timeout)
             if save_frames and image is not None:
                 raw = np.frombuffer(image.raw_data, dtype=np.uint8)
                 # CARLA hands over BGRA; drop alpha and flip to RGB.
@@ -924,15 +930,13 @@ def collect(args) -> int:
             "information."
         )
         args.measure_occlusion = False
-    if args.headless and args.frames:
-        print("--headless turns rendering off, so no frames will be saved")
 
     random.seed(args.seed)
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     written = 0
-    for episode in range(args.episodes):
+    for episode in range(args.start_index, args.start_index + args.episodes):
         scenario = (
             SCENARIOS[episode % len(SCENARIOS)]
             if args.scenario == "mixed"
@@ -978,15 +982,24 @@ def main() -> int:
     p.add_argument("--out-dir", default="data/carla")
     p.add_argument("--seed", type=int, default=0)
     p.add_argument(
+        "--start-index",
+        type=int,
+        default=0,
+        help="first episode number. Episode N is written as ep_000N.json and "
+        "seeded with --seed + N, so collecting in batches with a different "
+        "start index each time gives unique names and unique seeds.",
+    )
+    p.add_argument(
         "--scenario", default="mixed", choices=("mixed",) + SCENARIOS
     )
     p.add_argument("--town", default="Town10HD_Opt")
     p.add_argument(
         "--headless",
         action="store_true",
-        help="turn the server's rendering off for this run. Much faster, but "
-        "there is then nothing to capture, so no frames are saved and only "
-        "the annotations come out.",
+        help="ask the server for no_rendering_mode. Note: measured on CARLA "
+        "0.9.16 this did NOT stop the RGB camera producing images, so it is a "
+        "request rather than a guarantee, and it does not by itself make a run "
+        "annotation-only. Use --no-frames for that.",
     )
     p.add_argument("--host", default="127.0.0.1")
     p.add_argument("--port", type=int, default=2000)
@@ -995,7 +1008,16 @@ def main() -> int:
     )
     p.add_argument("--width", type=int, default=1280)
     p.add_argument("--height", type=int, default=720)
-    p.add_argument("--fov", type=float, default=90.0)
+    p.add_argument(
+        "--fov",
+        type=float,
+        default=60.0,
+        help="horizontal field of view in degrees. The default is chosen to "
+        "put pedestrians at roughly the size JAAD's are: at 90 degrees a "
+        "person 25 m away is about 50 px tall at 720p, which MediaPipe cannot "
+        "do anything with, and JAAD's median annotated pedestrian is 138 px "
+        "tall at 1080p. A narrower lens is also closer to a real dashcam.",
+    )
     p.add_argument("--episode-seconds", type=float, default=12.0)
     p.add_argument(
         "--ego-speed", type=float, default=5.0, help="target ego speed, m/s"
