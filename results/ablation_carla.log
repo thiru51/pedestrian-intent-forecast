@@ -1,0 +1,55 @@
+device=cuda:0 (NVIDIA GeForce RTX 4080 Laptop GPU), sm_89, 11.6 GiB total / 4.6 GiB free, bf16=True, amp=bfloat16, tf32=True
+data: source=carla 1691 train / 684 val windows, positive rate 0.351 / 0.542, lead 45 frames (2.25s at 20 Hz)
+split: by episode, 141 train / 50 val, no overlap
+val subsets: 211 windows where the pedestrian was occluded at some point, 473 clear
+protocol: 3 seeds per arm, 30 epochs, batch 256, identical data and schedule for both arms. Metrics are from the final epoch, with no best-epoch selection.
+
+--- fusion  seed 0  (458,192 params)
+    final n=684 pos=0.542 AP=0.9455 AUC=0.9308 F1=0.8480 prec=0.8786 recall=0.8194 miss=0.1806
+    2.7s  30,803 samples/s  peak VRAM 0.109 GiB
+--- pose_only  seed 0  (435,424 params)
+    final n=684 pos=0.542 AP=0.8421 AUC=0.7742 F1=0.7297 prec=0.8237 recall=0.6550 miss=0.3450
+    1.8s  37,399 samples/s  peak VRAM 0.104 GiB
+--- fusion  seed 1  (458,192 params)
+    final n=684 pos=0.542 AP=0.9366 AUC=0.9245 F1=0.8364 prec=0.8855 recall=0.7925 miss=0.2075
+    2.1s  31,634 samples/s  peak VRAM 0.109 GiB
+--- pose_only  seed 1  (435,424 params)
+    final n=684 pos=0.542 AP=0.8304 AUC=0.7534 F1=0.7069 prec=0.7792 recall=0.6469 miss=0.3531
+    1.9s  35,079 samples/s  peak VRAM 0.104 GiB
+--- fusion  seed 2  (458,192 params)
+    final n=684 pos=0.542 AP=0.9474 AUC=0.9336 F1=0.8488 prec=0.8743 recall=0.8248 miss=0.1752
+    2.1s  32,453 samples/s  peak VRAM 0.109 GiB
+--- pose_only  seed 2  (435,424 params)
+    final n=684 pos=0.542 AP=0.8169 AUC=0.7491 F1=0.7155 prec=0.7846 recall=0.6577 miss=0.3423
+    1.8s  36,933 samples/s  peak VRAM 0.104 GiB
+
+==============================================================================
+arm           params               AP     AUC    prec  recall      F1    miss
+pose_only    435,424     0.8298 +-0.0126  0.7589  0.7958  0.6532  0.7174  0.3468
+fusion       458,192     0.9432 +-0.0058  0.9296  0.8795  0.8122  0.8444  0.1878
+------------------------------------------------------------------------------
+fused - pose_only: dAP +0.1134  dAUC +0.1707  (+13.7% relative AP)
+
+occluded subset: n=211 positive rate 0.526
+  arm                       AP     AUC    prec  recall    miss
+  pose_only       0.7395 +-0.0566  0.7029  0.7281  0.5586  0.4414
+  fusion          0.9481 +-0.0055  0.9346  0.8905  0.8018  0.1982
+  fused - pose_only: dAP +0.2086
+
+clear subset: n=473 positive rate 0.550
+  arm                       AP     AUC    prec  recall    miss
+  pose_only       0.8587 +-0.0064  0.7813  0.8225  0.6936  0.3064
+  fusion          0.9418 +-0.0061  0.9280  0.8750  0.8167  0.1833
+  fused - pose_only: dAP +0.0831
+
+total wall clock 12.9s
+wrote artifacts/ablation.json
+
+CAVEAT. These numbers are on SIMULATED pedestrians, from CARLA.
+The labels are exact, which is the point, but the people are not
+real: they walk on a navmesh, they are lit by a game engine, and
+they never do any of the things a gesture head exists to catch.
+This is a measurement of the pipeline on synthetic video with
+ground-truth labels. It is NOT accuracy on real pedestrians, and
+it should never be quoted as one. The run that would mean that
+is --source jaad with a pose cache, and it needs the clips.

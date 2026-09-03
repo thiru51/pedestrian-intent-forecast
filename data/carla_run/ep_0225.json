@@ -1,0 +1,3528 @@
+{
+ "format": "pif-carla-recording",
+ "version": 1,
+ "episode_id": "ep_0225",
+ "dataset": "carla",
+ "town": "Carla/Maps/Town10HD_Opt",
+ "scenario": "hesitate",
+ "seed": 1225,
+ "fps": 20.0,
+ "fixed_delta_seconds": 0.05,
+ "width": 1280,
+ "height": 720,
+ "num_frames": 200,
+ "road_type": "street",
+ "camera": {
+  "fov": 60.0,
+  "fx": 1108.5125168440816,
+  "fy": 1108.5125168440816,
+  "cx": 640.0,
+  "cy": 360.0,
+  "location_in_ego": [
+   1.5,
+   0.0,
+   1.6
+  ],
+  "rotation_in_ego": [
+   0.0,
+   0.0,
+   0.0
+  ]
+ },
+ "occlusion_measured": true,
+ "frames_file": "ep_0225.npz",
+ "ego": {
+  "0": {
+   "OBD_speed": 0.055,
+   "speed_mps": 0.015,
+   "action": "stopped"
+  },
+  "1": {
+   "OBD_speed": 0.037,
+   "speed_mps": 0.01,
+   "action": "stopped"
+  },
+  "2": {
+   "OBD_speed": 0.025,
+   "speed_mps": 0.007,
+   "action": "stopped"
+  },
+  "3": {
+   "OBD_speed": 0.017,
+   "speed_mps": 0.005,
+   "action": "stopped"
+  },
+  "4": {
+   "OBD_speed": 0.011,
+   "speed_mps": 0.003,
+   "action": "stopped"
+  },
+  "5": {
+   "OBD_speed": 0.002,
+   "speed_mps": 0.001,
+   "action": "stopped"
+  },
+  "6": {
+   "OBD_speed": 0.003,
+   "speed_mps": 0.001,
+   "action": "stopped"
+  },
+  "7": {
+   "OBD_speed": 0.004,
+   "speed_mps": 0.001,
+   "action": "stopped"
+  },
+  "8": {
+   "OBD_speed": 0.003,
+   "speed_mps": 0.001,
+   "action": "stopped"
+  },
+  "9": {
+   "OBD_speed": 0.002,
+   "speed_mps": 0.001,
+   "action": "stopped"
+  },
+  "10": {
+   "OBD_speed": 0.002,
+   "speed_mps": 0.001,
+   "action": "stopped"
+  },
+  "11": {
+   "OBD_speed": 0.001,
+   "speed_mps": 0.0,
+   "action": "stopped"
+  },
+  "12": {
+   "OBD_speed": 0.001,
+   "speed_mps": 0.0,
+   "action": "stopped"
+  },
+  "13": {
+   "OBD_speed": 0.001,
+   "speed_mps": 0.0,
+   "action": "stopped"
+  },
+  "14": {
+   "OBD_speed": 0.0,
+   "speed_mps": 0.0,
+   "action": "stopped"
+  },
+  "15": {
+   "OBD_speed": 0.0,
+   "speed_mps": 0.0,
+   "action": "stopped"
+  },
+  "16": {
+   "OBD_speed": 0.0,
+   "speed_mps": 0.0,
+   "action": "stopped"
+  },
+  "17": {
+   "OBD_speed": 0.0,
+   "speed_mps": 0.0,
+   "action": "stopped"
+  },
+  "18": {
+   "OBD_speed": 0.964,
+   "speed_mps": 0.268,
+   "action": "stopped"
+  },
+  "19": {
+   "OBD_speed": 3.732,
+   "speed_mps": 1.037,
+   "action": "moving_slow"
+  },
+  "20": {
+   "OBD_speed": 5.352,
+   "speed_mps": 1.487,
+   "action": "moving_slow"
+  },
+  "21": {
+   "OBD_speed": 6.549,
+   "speed_mps": 1.819,
+   "action": "moving_slow"
+  },
+  "22": {
+   "OBD_speed": 7.376,
+   "speed_mps": 2.049,
+   "action": "moving_slow"
+  },
+  "23": {
+   "OBD_speed": 8.027,
+   "speed_mps": 2.23,
+   "action": "moving_slow"
+  },
+  "24": {
+   "OBD_speed": 8.556,
+   "speed_mps": 2.377,
+   "action": "moving_slow"
+  },
+  "25": {
+   "OBD_speed": 9.082,
+   "speed_mps": 2.523,
+   "action": "moving_slow"
+  },
+  "26": {
+   "OBD_speed": 9.537,
+   "speed_mps": 2.649,
+   "action": "moving_slow"
+  },
+  "27": {
+   "OBD_speed": 10.013,
+   "speed_mps": 2.781,
+   "action": "moving_slow"
+  },
+  "28": {
+   "OBD_speed": 10.436,
+   "speed_mps": 2.899,
+   "action": "moving_slow"
+  },
+  "29": {
+   "OBD_speed": 10.885,
+   "speed_mps": 3.024,
+   "action": "moving_slow"
+  },
+  "30": {
+   "OBD_speed": 11.29,
+   "speed_mps": 3.136,
+   "action": "moving_slow"
+  },
+  "31": {
+   "OBD_speed": 11.722,
+   "speed_mps": 3.256,
+   "action": "moving_slow"
+  },
+  "32": {
+   "OBD_speed": 12.114,
+   "speed_mps": 3.365,
+   "action": "moving_slow"
+  },
+  "33": {
+   "OBD_speed": 12.531,
+   "speed_mps": 3.481,
+   "action": "moving_slow"
+  },
+  "34": {
+   "OBD_speed": 12.914,
+   "speed_mps": 3.587,
+   "action": "moving_slow"
+  },
+  "35": {
+   "OBD_speed": 13.318,
+   "speed_mps": 3.7,
+   "action": "moving_slow"
+  },
+  "36": {
+   "OBD_speed": 13.693,
+   "speed_mps": 3.804,
+   "action": "moving_slow"
+  },
+  "37": {
+   "OBD_speed": 14.085,
+   "speed_mps": 3.913,
+   "action": "moving_slow"
+  },
+  "38": {
+   "OBD_speed": 14.448,
+   "speed_mps": 4.013,
+   "action": "moving_slow"
+  },
+  "39": {
+   "OBD_speed": 14.822,
+   "speed_mps": 4.117,
+   "action": "moving_slow"
+  },
+  "40": {
+   "OBD_speed": 15.173,
+   "speed_mps": 4.215,
+   "action": "moving_slow"
+  },
+  "41": {
+   "OBD_speed": 15.532,
+   "speed_mps": 4.314,
+   "action": "moving_slow"
+  },
+  "42": {
+   "OBD_speed": 15.874,
+   "speed_mps": 4.409,
+   "action": "moving_slow"
+  },
+  "43": {
+   "OBD_speed": 16.216,
+   "speed_mps": 4.504,
+   "action": "moving_slow"
+  },
+  "44": {
+   "OBD_speed": 16.548,
+   "speed_mps": 4.597,
+   "action": "moving_slow"
+  },
+  "45": {
+   "OBD_speed": 16.875,
+   "speed_mps": 4.688,
+   "action": "moving_slow"
+  },
+  "46": {
+   "OBD_speed": 17.196,
+   "speed_mps": 4.777,
+   "action": "moving_slow"
+  },
+  "47": {
+   "OBD_speed": 17.513,
+   "speed_mps": 4.865,
+   "action": "moving_slow"
+  },
+  "48": {
+   "OBD_speed": 17.825,
+   "speed_mps": 4.951,
+   "action": "moving_slow"
+  },
+  "49": {
+   "OBD_speed": 18.133,
+   "speed_mps": 5.037,
+   "action": "moving_slow"
+  },
+  "50": {
+   "OBD_speed": 18.348,
+   "speed_mps": 5.097,
+   "action": "moving_slow"
+  },
+  "51": {
+   "OBD_speed": 18.09,
+   "speed_mps": 5.025,
+   "action": "moving_slow"
+  },
+  "52": {
+   "OBD_speed": 17.912,
+   "speed_mps": 4.975,
+   "action": "moving_slow"
+  },
+  "53": {
+   "OBD_speed": 17.777,
+   "speed_mps": 4.938,
+   "action": "moving_slow"
+  },
+  "54": {
+   "OBD_speed": 17.753,
+   "speed_mps": 4.931,
+   "action": "moving_slow"
+  },
+  "55": {
+   "OBD_speed": 17.871,
+   "speed_mps": 4.964,
+   "action": "moving_slow"
+  },
+  "56": {
+   "OBD_speed": 18.069,
+   "speed_mps": 5.019,
+   "action": "moving_slow"
+  },
+  "57": {
+   "OBD_speed": 18.26,
+   "speed_mps": 5.072,
+   "action": "moving_slow"
+  },
+  "58": {
+   "OBD_speed": 17.966,
+   "speed_mps": 4.99,
+   "action": "moving_slow"
+  },
+  "59": {
+   "OBD_speed": 17.917,
+   "speed_mps": 4.977,
+   "action": "moving_slow"
+  },
+  "60": {
+   "OBD_speed": 17.92,
+   "speed_mps": 4.978,
+   "action": "moving_slow"
+  },
+  "61": {
+   "OBD_speed": 18.052,
+   "speed_mps": 5.014,
+   "action": "moving_slow"
+  },
+  "62": {
+   "OBD_speed": 18.058,
+   "speed_mps": 5.016,
+   "action": "moving_slow"
+  },
+  "63": {
+   "OBD_speed": 17.936,
+   "speed_mps": 4.982,
+   "action": "moving_slow"
+  },
+  "64": {
+   "OBD_speed": 17.786,
+   "speed_mps": 4.941,
+   "action": "moving_slow"
+  },
+  "65": {
+   "OBD_speed": 17.588,
+   "speed_mps": 4.886,
+   "action": "moving_slow"
+  },
+  "66": {
+   "OBD_speed": 17.532,
+   "speed_mps": 4.87,
+   "action": "moving_slow"
+  },
+  "67": {
+   "OBD_speed": 17.633,
+   "speed_mps": 4.898,
+   "action": "moving_slow"
+  },
+  "68": {
+   "OBD_speed": 17.824,
+   "speed_mps": 4.951,
+   "action": "moving_slow"
+  },
+  "69": {
+   "OBD_speed": 18.063,
+   "speed_mps": 5.017,
+   "action": "moving_slow"
+  },
+  "70": {
+   "OBD_speed": 18.267,
+   "speed_mps": 5.074,
+   "action": "moving_slow"
+  },
+  "71": {
+   "OBD_speed": 17.859,
+   "speed_mps": 4.961,
+   "action": "moving_slow"
+  },
+  "72": {
+   "OBD_speed": 17.89,
+   "speed_mps": 4.969,
+   "action": "moving_slow"
+  },
+  "73": {
+   "OBD_speed": 17.92,
+   "speed_mps": 4.978,
+   "action": "moving_slow"
+  },
+  "74": {
+   "OBD_speed": 18.066,
+   "speed_mps": 5.018,
+   "action": "moving_slow"
+  },
+  "75": {
+   "OBD_speed": 18.084,
+   "speed_mps": 5.023,
+   "action": "moving_slow"
+  },
+  "76": {
+   "OBD_speed": 17.966,
+   "speed_mps": 4.991,
+   "action": "moving_slow"
+  },
+  "77": {
+   "OBD_speed": 17.874,
+   "speed_mps": 4.965,
+   "action": "moving_slow"
+  },
+  "78": {
+   "OBD_speed": 17.867,
+   "speed_mps": 4.963,
+   "action": "moving_slow"
+  },
+  "79": {
+   "OBD_speed": 17.994,
+   "speed_mps": 4.998,
+   "action": "moving_slow"
+  },
+  "80": {
+   "OBD_speed": 18.201,
+   "speed_mps": 5.056,
+   "action": "moving_slow"
+  },
+  "81": {
+   "OBD_speed": 18.053,
+   "speed_mps": 5.015,
+   "action": "moving_slow"
+  },
+  "82": {
+   "OBD_speed": 17.787,
+   "speed_mps": 4.941,
+   "action": "moving_slow"
+  },
+  "83": {
+   "OBD_speed": 17.894,
+   "speed_mps": 4.971,
+   "action": "moving_slow"
+  },
+  "84": {
+   "OBD_speed": 17.944,
+   "speed_mps": 4.984,
+   "action": "moving_slow"
+  },
+  "85": {
+   "OBD_speed": 18.104,
+   "speed_mps": 5.029,
+   "action": "moving_slow"
+  },
+  "86": {
+   "OBD_speed": 18.013,
+   "speed_mps": 5.004,
+   "action": "moving_slow"
+  },
+  "87": {
+   "OBD_speed": 17.971,
+   "speed_mps": 4.992,
+   "action": "moving_slow"
+  },
+  "88": {
+   "OBD_speed": 17.886,
+   "speed_mps": 4.968,
+   "action": "moving_slow"
+  },
+  "89": {
+   "OBD_speed": 17.889,
+   "speed_mps": 4.969,
+   "action": "moving_slow"
+  },
+  "90": {
+   "OBD_speed": 18.021,
+   "speed_mps": 5.006,
+   "action": "moving_slow"
+  },
+  "91": {
+   "OBD_speed": 18.204,
+   "speed_mps": 5.057,
+   "action": "moving_slow"
+  },
+  "92": {
+   "OBD_speed": 18.067,
+   "speed_mps": 5.019,
+   "action": "moving_slow"
+  },
+  "93": {
+   "OBD_speed": 17.978,
+   "speed_mps": 4.994,
+   "action": "moving_slow"
+  },
+  "94": {
+   "OBD_speed": 17.959,
+   "speed_mps": 4.989,
+   "action": "moving_slow"
+  },
+  "95": {
+   "OBD_speed": 17.993,
+   "speed_mps": 4.998,
+   "action": "moving_slow"
+  },
+  "96": {
+   "OBD_speed": 18.161,
+   "speed_mps": 5.045,
+   "action": "moving_slow"
+  },
+  "97": {
+   "OBD_speed": 18.102,
+   "speed_mps": 5.028,
+   "action": "moving_slow"
+  },
+  "98": {
+   "OBD_speed": 18.185,
+   "speed_mps": 5.051,
+   "action": "moving_slow"
+  },
+  "99": {
+   "OBD_speed": 17.982,
+   "speed_mps": 4.995,
+   "action": "moving_slow"
+  },
+  "100": {
+   "OBD_speed": 18.0,
+   "speed_mps": 5.0,
+   "action": "moving_slow"
+  },
+  "101": {
+   "OBD_speed": 17.934,
+   "speed_mps": 4.982,
+   "action": "moving_slow"
+  },
+  "102": {
+   "OBD_speed": 18.061,
+   "speed_mps": 5.017,
+   "action": "moving_slow"
+  },
+  "103": {
+   "OBD_speed": 18.171,
+   "speed_mps": 5.047,
+   "action": "moving_slow"
+  },
+  "104": {
+   "OBD_speed": 17.916,
+   "speed_mps": 4.977,
+   "action": "moving_slow"
+  },
+  "105": {
+   "OBD_speed": 17.915,
+   "speed_mps": 4.976,
+   "action": "moving_slow"
+  },
+  "106": {
+   "OBD_speed": 17.944,
+   "speed_mps": 4.985,
+   "action": "moving_slow"
+  },
+  "107": {
+   "OBD_speed": 18.094,
+   "speed_mps": 5.026,
+   "action": "moving_slow"
+  },
+  "108": {
+   "OBD_speed": 17.956,
+   "speed_mps": 4.988,
+   "action": "moving_slow"
+  },
+  "109": {
+   "OBD_speed": 18.069,
+   "speed_mps": 5.019,
+   "action": "moving_slow"
+  },
+  "110": {
+   "OBD_speed": 17.952,
+   "speed_mps": 4.987,
+   "action": "moving_slow"
+  },
+  "111": {
+   "OBD_speed": 17.852,
+   "speed_mps": 4.959,
+   "action": "moving_slow"
+  },
+  "112": {
+   "OBD_speed": 17.848,
+   "speed_mps": 4.958,
+   "action": "moving_slow"
+  },
+  "113": {
+   "OBD_speed": 17.977,
+   "speed_mps": 4.994,
+   "action": "moving_slow"
+  },
+  "114": {
+   "OBD_speed": 18.187,
+   "speed_mps": 5.052,
+   "action": "moving_slow"
+  },
+  "115": {
+   "OBD_speed": 18.132,
+   "speed_mps": 5.037,
+   "action": "moving_slow"
+  },
+  "116": {
+   "OBD_speed": 18.081,
+   "speed_mps": 5.022,
+   "action": "moving_slow"
+  },
+  "117": {
+   "OBD_speed": 17.807,
+   "speed_mps": 4.946,
+   "action": "moving_slow"
+  },
+  "118": {
+   "OBD_speed": 17.672,
+   "speed_mps": 4.909,
+   "action": "moving_slow"
+  },
+  "119": {
+   "OBD_speed": 17.65,
+   "speed_mps": 4.903,
+   "action": "moving_slow"
+  },
+  "120": {
+   "OBD_speed": 17.77,
+   "speed_mps": 4.936,
+   "action": "moving_slow"
+  },
+  "121": {
+   "OBD_speed": 17.971,
+   "speed_mps": 4.992,
+   "action": "moving_slow"
+  },
+  "122": {
+   "OBD_speed": 18.218,
+   "speed_mps": 5.061,
+   "action": "moving_slow"
+  },
+  "123": {
+   "OBD_speed": 18.232,
+   "speed_mps": 5.064,
+   "action": "moving_slow"
+  },
+  "124": {
+   "OBD_speed": 17.99,
+   "speed_mps": 4.997,
+   "action": "moving_slow"
+  },
+  "125": {
+   "OBD_speed": 17.976,
+   "speed_mps": 4.993,
+   "action": "moving_slow"
+  },
+  "126": {
+   "OBD_speed": 18.021,
+   "speed_mps": 5.006,
+   "action": "moving_slow"
+  },
+  "127": {
+   "OBD_speed": 17.942,
+   "speed_mps": 4.984,
+   "action": "moving_slow"
+  },
+  "128": {
+   "OBD_speed": 18.105,
+   "speed_mps": 5.029,
+   "action": "moving_slow"
+  },
+  "129": {
+   "OBD_speed": 18.097,
+   "speed_mps": 5.027,
+   "action": "moving_slow"
+  },
+  "130": {
+   "OBD_speed": 17.957,
+   "speed_mps": 4.988,
+   "action": "moving_slow"
+  },
+  "131": {
+   "OBD_speed": 17.638,
+   "speed_mps": 4.9,
+   "action": "moving_slow"
+  },
+  "132": {
+   "OBD_speed": 17.731,
+   "speed_mps": 4.925,
+   "action": "moving_slow"
+  },
+  "133": {
+   "OBD_speed": 17.915,
+   "speed_mps": 4.976,
+   "action": "moving_slow"
+  },
+  "134": {
+   "OBD_speed": 18.148,
+   "speed_mps": 5.041,
+   "action": "moving_slow"
+  },
+  "135": {
+   "OBD_speed": 18.074,
+   "speed_mps": 5.021,
+   "action": "moving_slow"
+  },
+  "136": {
+   "OBD_speed": 17.962,
+   "speed_mps": 4.989,
+   "action": "moving_slow"
+  },
+  "137": {
+   "OBD_speed": 17.88,
+   "speed_mps": 4.967,
+   "action": "moving_slow"
+  },
+  "138": {
+   "OBD_speed": 17.879,
+   "speed_mps": 4.966,
+   "action": "moving_slow"
+  },
+  "139": {
+   "OBD_speed": 17.998,
+   "speed_mps": 4.999,
+   "action": "moving_slow"
+  },
+  "140": {
+   "OBD_speed": 18.166,
+   "speed_mps": 5.046,
+   "action": "moving_slow"
+  },
+  "141": {
+   "OBD_speed": 18.1,
+   "speed_mps": 5.028,
+   "action": "moving_slow"
+  },
+  "142": {
+   "OBD_speed": 17.971,
+   "speed_mps": 4.992,
+   "action": "moving_slow"
+  },
+  "143": {
+   "OBD_speed": 17.898,
+   "speed_mps": 4.972,
+   "action": "moving_slow"
+  },
+  "144": {
+   "OBD_speed": 17.901,
+   "speed_mps": 4.972,
+   "action": "moving_slow"
+  },
+  "145": {
+   "OBD_speed": 18.027,
+   "speed_mps": 5.007,
+   "action": "moving_slow"
+  },
+  "146": {
+   "OBD_speed": 18.139,
+   "speed_mps": 5.039,
+   "action": "moving_slow"
+  },
+  "147": {
+   "OBD_speed": 17.969,
+   "speed_mps": 4.991,
+   "action": "moving_slow"
+  },
+  "148": {
+   "OBD_speed": 17.784,
+   "speed_mps": 4.94,
+   "action": "moving_slow"
+  },
+  "149": {
+   "OBD_speed": 17.564,
+   "speed_mps": 4.879,
+   "action": "moving_slow"
+  },
+  "150": {
+   "OBD_speed": 17.489,
+   "speed_mps": 4.858,
+   "action": "moving_slow"
+  },
+  "151": {
+   "OBD_speed": 17.572,
+   "speed_mps": 4.881,
+   "action": "moving_slow"
+  },
+  "152": {
+   "OBD_speed": 17.727,
+   "speed_mps": 4.924,
+   "action": "moving_slow"
+  },
+  "153": {
+   "OBD_speed": 17.943,
+   "speed_mps": 4.984,
+   "action": "moving_slow"
+  },
+  "154": {
+   "OBD_speed": 18.178,
+   "speed_mps": 5.05,
+   "action": "moving_slow"
+  },
+  "155": {
+   "OBD_speed": 18.119,
+   "speed_mps": 5.033,
+   "action": "moving_slow"
+  },
+  "156": {
+   "OBD_speed": 18.008,
+   "speed_mps": 5.002,
+   "action": "moving_slow"
+  },
+  "157": {
+   "OBD_speed": 17.832,
+   "speed_mps": 4.953,
+   "action": "moving_slow"
+  },
+  "158": {
+   "OBD_speed": 17.681,
+   "speed_mps": 4.911,
+   "action": "moving_slow"
+  },
+  "159": {
+   "OBD_speed": 17.638,
+   "speed_mps": 4.899,
+   "action": "moving_slow"
+  },
+  "160": {
+   "OBD_speed": 17.737,
+   "speed_mps": 4.927,
+   "action": "moving_slow"
+  },
+  "161": {
+   "OBD_speed": 17.92,
+   "speed_mps": 4.978,
+   "action": "moving_slow"
+  },
+  "162": {
+   "OBD_speed": 18.146,
+   "speed_mps": 5.04,
+   "action": "moving_slow"
+  },
+  "163": {
+   "OBD_speed": 18.152,
+   "speed_mps": 5.042,
+   "action": "moving_slow"
+  },
+  "164": {
+   "OBD_speed": 17.954,
+   "speed_mps": 4.987,
+   "action": "moving_slow"
+  },
+  "165": {
+   "OBD_speed": 17.89,
+   "speed_mps": 4.97,
+   "action": "moving_slow"
+  },
+  "166": {
+   "OBD_speed": 17.907,
+   "speed_mps": 4.974,
+   "action": "moving_slow"
+  },
+  "167": {
+   "OBD_speed": 18.035,
+   "speed_mps": 5.01,
+   "action": "moving_slow"
+  },
+  "168": {
+   "OBD_speed": 18.196,
+   "speed_mps": 5.054,
+   "action": "moving_slow"
+  },
+  "169": {
+   "OBD_speed": 18.103,
+   "speed_mps": 5.029,
+   "action": "moving_slow"
+  },
+  "170": {
+   "OBD_speed": 17.959,
+   "speed_mps": 4.988,
+   "action": "moving_slow"
+  },
+  "171": {
+   "OBD_speed": 17.873,
+   "speed_mps": 4.965,
+   "action": "moving_slow"
+  },
+  "172": {
+   "OBD_speed": 17.704,
+   "speed_mps": 4.918,
+   "action": "moving_slow"
+  },
+  "173": {
+   "OBD_speed": 17.663,
+   "speed_mps": 4.906,
+   "action": "moving_slow"
+  },
+  "174": {
+   "OBD_speed": 17.77,
+   "speed_mps": 4.936,
+   "action": "moving_slow"
+  },
+  "175": {
+   "OBD_speed": 17.968,
+   "speed_mps": 4.991,
+   "action": "moving_slow"
+  },
+  "176": {
+   "OBD_speed": 18.213,
+   "speed_mps": 5.059,
+   "action": "moving_slow"
+  },
+  "177": {
+   "OBD_speed": 18.32,
+   "speed_mps": 5.089,
+   "action": "moving_slow"
+  },
+  "178": {
+   "OBD_speed": 18.063,
+   "speed_mps": 5.017,
+   "action": "moving_slow"
+  },
+  "179": {
+   "OBD_speed": 17.925,
+   "speed_mps": 4.979,
+   "action": "moving_slow"
+  },
+  "180": {
+   "OBD_speed": 17.391,
+   "speed_mps": 4.831,
+   "action": "moving_slow"
+  },
+  "181": {
+   "OBD_speed": 17.425,
+   "speed_mps": 4.84,
+   "action": "moving_slow"
+  },
+  "182": {
+   "OBD_speed": 17.378,
+   "speed_mps": 4.827,
+   "action": "moving_slow"
+  },
+  "183": {
+   "OBD_speed": 17.378,
+   "speed_mps": 4.827,
+   "action": "moving_slow"
+  },
+  "184": {
+   "OBD_speed": 17.432,
+   "speed_mps": 4.842,
+   "action": "moving_slow"
+  },
+  "185": {
+   "OBD_speed": 17.238,
+   "speed_mps": 4.788,
+   "action": "moving_slow"
+  },
+  "186": {
+   "OBD_speed": 17.312,
+   "speed_mps": 4.809,
+   "action": "moving_slow"
+  },
+  "187": {
+   "OBD_speed": 16.805,
+   "speed_mps": 4.668,
+   "action": "moving_slow"
+  },
+  "188": {
+   "OBD_speed": 16.709,
+   "speed_mps": 4.641,
+   "action": "moving_slow"
+  },
+  "189": {
+   "OBD_speed": 16.809,
+   "speed_mps": 4.669,
+   "action": "moving_slow"
+  },
+  "190": {
+   "OBD_speed": 16.924,
+   "speed_mps": 4.701,
+   "action": "moving_slow"
+  },
+  "191": {
+   "OBD_speed": 17.377,
+   "speed_mps": 4.827,
+   "action": "moving_slow"
+  },
+  "192": {
+   "OBD_speed": 17.879,
+   "speed_mps": 4.966,
+   "action": "moving_slow"
+  },
+  "193": {
+   "OBD_speed": 18.325,
+   "speed_mps": 5.09,
+   "action": "moving_slow"
+  },
+  "194": {
+   "OBD_speed": 18.268,
+   "speed_mps": 5.075,
+   "action": "moving_slow"
+  },
+  "195": {
+   "OBD_speed": 17.945,
+   "speed_mps": 4.985,
+   "action": "moving_slow"
+  },
+  "196": {
+   "OBD_speed": 17.945,
+   "speed_mps": 4.985,
+   "action": "moving_slow"
+  },
+  "197": {
+   "OBD_speed": 17.901,
+   "speed_mps": 4.973,
+   "action": "moving_slow"
+  },
+  "198": {
+   "OBD_speed": 17.935,
+   "speed_mps": 4.982,
+   "action": "moving_slow"
+  },
+  "199": {
+   "OBD_speed": 18.086,
+   "speed_mps": 5.024,
+   "action": "moving_slow"
+  }
+ },
+ "scene": {
+  "0": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "1": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "2": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "3": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "4": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "5": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "6": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "7": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "8": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "9": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "10": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "11": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "12": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "13": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "14": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "15": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "16": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "17": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "18": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "19": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "20": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "21": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "22": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "23": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "24": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "25": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "26": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "27": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "28": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "29": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "30": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "31": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "32": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "33": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "34": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "35": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "36": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "37": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "38": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "39": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "40": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "41": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "42": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "43": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "44": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "45": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "46": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "47": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "48": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "49": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "50": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "51": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "52": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "53": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "54": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "55": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "56": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "57": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "58": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "59": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "60": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "61": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "62": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "63": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "64": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "65": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "66": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "67": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "68": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "69": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "70": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "71": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "72": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "73": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "74": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "75": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "76": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "77": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "78": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "79": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "80": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "81": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "82": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "83": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "84": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "85": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "86": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "87": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "88": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "89": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "90": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "91": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "92": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "93": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "94": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "95": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "96": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "97": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "98": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "99": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "100": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "101": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "102": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "103": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "104": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "105": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "106": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "107": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "108": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "109": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "110": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "111": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "112": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "113": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "114": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "115": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "116": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "117": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "118": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "119": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "120": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "121": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "122": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "123": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "124": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "125": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "126": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "127": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "128": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "129": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "130": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "131": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "132": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "133": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "134": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "135": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "136": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "137": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "138": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "139": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "140": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "141": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "142": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "143": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "144": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "145": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "146": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "147": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "148": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "149": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "150": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "151": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "152": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "153": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "154": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "155": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "156": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "157": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "158": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "159": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "160": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "161": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "162": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "163": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "164": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "165": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "166": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "167": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "168": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "169": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "170": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "171": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "172": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "173": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "174": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "175": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "176": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "177": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "178": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "179": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "180": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "181": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "182": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "183": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "184": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "185": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "186": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "187": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "188": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "189": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "190": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "191": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "192": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "193": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "194": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "195": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "196": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "197": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "198": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  },
+  "199": {
+   "ped_crossing": 0,
+   "ped_sign": 0,
+   "stop_sign": 0,
+   "traffic_light": "n/a"
+  }
+ },
+ "walkers": [
+  {
+   "ped_id": "ep_0225_w0",
+   "scenario": "hesitate",
+   "ego_relevant": true,
+   "frames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119,
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127,
+    128,
+    129,
+    130,
+    131,
+    132,
+    136,
+    137,
+    143,
+    144,
+    145,
+    146,
+    147,
+    148
+   ],
+   "bbox": [
+    [
+     819.11,
+     347.98,
+     837.5,
+     426.34
+    ],
+    [
+     819.11,
+     348.0,
+     837.5,
+     426.36
+    ],
+    [
+     819.11,
+     348.01,
+     837.5,
+     426.37
+    ],
+    [
+     819.11,
+     348.02,
+     837.5,
+     426.38
+    ],
+    [
+     819.11,
+     348.02,
+     837.5,
+     426.38
+    ],
+    [
+     819.11,
+     348.02,
+     837.5,
+     426.38
+    ],
+    [
+     819.11,
+     348.02,
+     837.5,
+     426.38
+    ],
+    [
+     819.11,
+     348.03,
+     837.5,
+     426.39
+    ],
+    [
+     819.11,
+     348.03,
+     837.5,
+     426.39
+    ],
+    [
+     819.11,
+     348.03,
+     837.5,
+     426.39
+    ],
+    [
+     819.11,
+     348.03,
+     837.5,
+     426.39
+    ],
+    [
+     819.11,
+     348.03,
+     837.5,
+     426.39
+    ],
+    [
+     819.11,
+     348.03,
+     837.5,
+     426.39
+    ],
+    [
+     819.11,
+     348.03,
+     837.5,
+     426.39
+    ],
+    [
+     819.11,
+     348.03,
+     837.5,
+     426.39
+    ],
+    [
+     819.11,
+     348.03,
+     837.5,
+     426.39
+    ],
+    [
+     819.11,
+     348.03,
+     837.5,
+     426.39
+    ],
+    [
+     819.13,
+     348.11,
+     837.52,
+     426.48
+    ],
+    [
+     819.38,
+     348.73,
+     837.8,
+     427.21
+    ],
+    [
+     819.83,
+     349.22,
+     838.32,
+     427.89
+    ],
+    [
+     820.45,
+     349.42,
+     839.01,
+     428.35
+    ],
+    [
+     821.13,
+     349.41,
+     839.77,
+     428.65
+    ],
+    [
+     821.95,
+     349.28,
+     840.67,
+     428.85
+    ],
+    [
+     822.75,
+     349.1,
+     841.57,
+     429.03
+    ],
+    [
+     823.62,
+     348.92,
+     842.54,
+     429.22
+    ],
+    [
+     824.54,
+     348.74,
+     843.57,
+     429.45
+    ],
+    [
+     825.52,
+     348.58,
+     844.66,
+     429.72
+    ],
+    [
+     826.55,
+     348.42,
+     845.81,
+     430.03
+    ],
+    [
+     827.64,
+     348.29,
+     847.03,
+     430.37
+    ],
+    [
+     828.78,
+     348.15,
+     848.31,
+     430.75
+    ],
+    [
+     829.98,
+     348.03,
+     849.66,
+     431.16
+    ],
+    [
+     831.25,
+     347.91,
+     851.07,
+     431.6
+    ],
+    [
+     832.57,
+     347.79,
+     852.56,
+     432.07
+    ],
+    [
+     833.95,
+     347.68,
+     854.11,
+     432.57
+    ],
+    [
+     835.4,
+     347.56,
+     855.73,
+     433.1
+    ],
+    [
+     836.91,
+     347.44,
+     857.43,
+     433.65
+    ],
+    [
+     838.54,
+     347.3,
+     858.35,
+     434.39
+    ],
+    [
+     837.78,
+     347.17,
+     861.56,
+     435.09
+    ],
+    [
+     837.96,
+     347.05,
+     863.44,
+     435.75
+    ],
+    [
+     839.16,
+     346.95,
+     863.86,
+     436.35
+    ],
+    [
+     841.33,
+     346.87,
+     862.83,
+     436.91
+    ],
+    [
+     841.56,
+     346.75,
+     863.24,
+     437.66
+    ],
+    [
+     841.53,
+     346.64,
+     863.43,
+     438.46
+    ],
+    [
+     841.26,
+     346.53,
+     863.38,
+     439.29
+    ],
+    [
+     840.73,
+     346.42,
+     863.07,
+     440.15
+    ],
+    [
+     839.93,
+     346.25,
+     862.51,
+     441.01
+    ],
+    [
+     838.86,
+     346.09,
+     861.67,
+     441.91
+    ],
+    [
+     837.51,
+     345.91,
+     860.56,
+     442.84
+    ],
+    [
+     835.86,
+     345.74,
+     859.15,
+     443.82
+    ],
+    [
+     834.03,
+     345.54,
+     857.58,
+     444.83
+    ],
+    [
+     834.86,
+     345.23,
+     858.71,
+     445.73
+    ],
+    [
+     836.67,
+     344.91,
+     860.85,
+     446.65
+    ],
+    [
+     839.06,
+     344.62,
+     863.58,
+     447.62
+    ],
+    [
+     841.5,
+     344.37,
+     866.37,
+     448.65
+    ],
+    [
+     844.0,
+     344.16,
+     869.23,
+     449.77
+    ],
+    [
+     846.6,
+     344.0,
+     872.21,
+     450.97
+    ],
+    [
+     849.29,
+     343.85,
+     875.29,
+     452.24
+    ],
+    [
+     852.03,
+     343.57,
+     878.44,
+     453.42
+    ],
+    [
+     854.83,
+     343.29,
+     881.65,
+     454.61
+    ],
+    [
+     857.7,
+     343.04,
+     884.94,
+     455.87
+    ],
+    [
+     860.65,
+     342.82,
+     888.33,
+     457.22
+    ],
+    [
+     863.72,
+     342.62,
+     891.86,
+     458.64
+    ],
+    [
+     866.69,
+     342.32,
+     895.3,
+     459.99
+    ],
+    [
+     869.83,
+     342.02,
+     898.91,
+     461.38
+    ],
+    [
+     873.05,
+     341.71,
+     902.63,
+     462.79
+    ],
+    [
+     876.36,
+     341.42,
+     906.44,
+     464.25
+    ],
+    [
+     879.77,
+     341.18,
+     910.37,
+     465.82
+    ],
+    [
+     883.32,
+     340.96,
+     914.46,
+     467.49
+    ],
+    [
+     887.01,
+     340.74,
+     918.73,
+     469.24
+    ],
+    [
+     890.89,
+     340.52,
+     923.2,
+     471.07
+    ],
+    [
+     894.9,
+     340.14,
+     927.83,
+     472.81
+    ],
+    [
+     898.8,
+     339.76,
+     932.36,
+     474.57
+    ],
+    [
+     902.95,
+     339.4,
+     937.17,
+     476.44
+    ],
+    [
+     907.28,
+     339.08,
+     942.19,
+     478.44
+    ],
+    [
+     912.33,
+     338.76,
+     947.97,
+     480.55
+    ],
+    [
+     916.24,
+     338.35,
+     952.61,
+     482.6
+    ],
+    [
+     921.02,
+     337.92,
+     958.16,
+     484.72
+    ],
+    [
+     925.94,
+     337.5,
+     963.88,
+     486.94
+    ],
+    [
+     931.05,
+     337.11,
+     969.84,
+     489.3
+    ],
+    [
+     936.43,
+     336.75,
+     976.1,
+     491.82
+    ],
+    [
+     941.11,
+     336.32,
+     981.69,
+     494.38
+    ],
+    [
+     946.88,
+     335.79,
+     988.41,
+     496.97
+    ],
+    [
+     951.43,
+     335.26,
+     993.92,
+     499.65
+    ],
+    [
+     955.51,
+     334.76,
+     998.98,
+     502.47
+    ],
+    [
+     959.26,
+     334.28,
+     1003.75,
+     505.48
+    ],
+    [
+     962.67,
+     333.77,
+     1008.22,
+     508.62
+    ],
+    [
+     965.87,
+     333.15,
+     1012.5,
+     511.8
+    ],
+    [
+     968.34,
+     332.53,
+     1016.09,
+     515.11
+    ],
+    [
+     970.35,
+     331.89,
+     1019.24,
+     518.58
+    ],
+    [
+     971.89,
+     331.27,
+     1021.96,
+     522.28
+    ],
+    [
+     973.18,
+     330.67,
+     1024.49,
+     526.25
+    ],
+    [
+     974.09,
+     329.93,
+     1026.68,
+     530.3
+    ],
+    [
+     974.3,
+     329.15,
+     1028.21,
+     534.54
+    ],
+    [
+     973.87,
+     328.33,
+     1029.14,
+     538.95
+    ],
+    [
+     973.37,
+     327.49,
+     1030.06,
+     543.62
+    ],
+    [
+     972.66,
+     326.67,
+     1030.86,
+     548.63
+    ],
+    [
+     972.34,
+     325.76,
+     1032.14,
+     553.89
+    ],
+    [
+     972.01,
+     324.78,
+     1033.5,
+     559.44
+    ],
+    [
+     971.04,
+     323.72,
+     1034.3,
+     565.22
+    ],
+    [
+     970.26,
+     322.6,
+     1035.38,
+     571.38
+    ],
+    [
+     969.2,
+     321.45,
+     1036.3,
+     577.94
+    ],
+    [
+     969.03,
+     320.22,
+     1038.28,
+     584.99
+    ],
+    [
+     968.2,
+     318.92,
+     1039.72,
+     592.52
+    ],
+    [
+     967.41,
+     317.48,
+     1041.34,
+     600.46
+    ],
+    [
+     966.52,
+     315.92,
+     1043.02,
+     608.92
+    ],
+    [
+     965.53,
+     314.3,
+     1044.78,
+     618.03
+    ],
+    [
+     964.55,
+     312.61,
+     1046.77,
+     627.97
+    ],
+    [
+     963.55,
+     310.76,
+     1049.01,
+     638.74
+    ],
+    [
+     962.28,
+     308.7,
+     1051.2,
+     650.28
+    ],
+    [
+     960.98,
+     306.44,
+     1053.65,
+     662.72
+    ],
+    [
+     959.52,
+     303.99,
+     1056.25,
+     676.25
+    ],
+    [
+     957.9,
+     301.35,
+     1059.04,
+     691.04
+    ],
+    [
+     956.2,
+     298.5,
+     1062.2,
+     707.41
+    ],
+    [
+     954.48,
+     295.4,
+     1065.91,
+     720.0
+    ],
+    [
+     953.03,
+     291.84,
+     1070.55,
+     720.0
+    ],
+    [
+     950.9,
+     287.79,
+     1075.09,
+     720.0
+    ],
+    [
+     948.17,
+     283.25,
+     1079.72,
+     720.0
+    ],
+    [
+     945.23,
+     278.2,
+     1085.02,
+     720.0
+    ],
+    [
+     941.8,
+     272.53,
+     1090.87,
+     720.0
+    ],
+    [
+     937.97,
+     266.07,
+     1097.7,
+     720.0
+    ],
+    [
+     933.81,
+     258.52,
+     1106.0,
+     720.0
+    ],
+    [
+     929.26,
+     249.62,
+     1116.31,
+     720.0
+    ],
+    [
+     924.78,
+     238.7,
+     1129.79,
+     720.0
+    ],
+    [
+     918.62,
+     225.32,
+     1144.92,
+     720.0
+    ],
+    [
+     911.0,
+     208.75,
+     1163.48,
+     720.0
+    ],
+    [
+     901.55,
+     187.73,
+     1187.09,
+     720.0
+    ],
+    [
+     889.87,
+     160.01,
+     1218.73,
+     720.0
+    ],
+    [
+     874.78,
+     121.36,
+     1262.76,
+     720.0
+    ],
+    [
+     854.14,
+     64.03,
+     1280.0,
+     720.0
+    ],
+    [
+     825.28,
+     0.0,
+     1280.0,
+     720.0
+    ],
+    [
+     766.66,
+     0.0,
+     1280.0,
+     720.0
+    ],
+    [
+     699.87,
+     0.0,
+     1280.0,
+     720.0
+    ],
+    [
+     624.44,
+     0.0,
+     1280.0,
+     720.0
+    ],
+    [
+     315.92,
+     714.13,
+     1280.0,
+     720.0
+    ],
+    [
+     250.62,
+     715.01,
+     1280.0,
+     720.0
+    ],
+    [
+     14.09,
+     595.8,
+     1280.0,
+     720.0
+    ],
+    [
+     9.46,
+     519.88,
+     1280.0,
+     720.0
+    ],
+    [
+     9.56,
+     495.09,
+     1280.0,
+     720.0
+    ],
+    [
+     14.4,
+     514.73,
+     1280.0,
+     720.0
+    ],
+    [
+     22.09,
+     568.07,
+     1280.0,
+     720.0
+    ],
+    [
+     32.66,
+     656.6,
+     1280.0,
+     720.0
+    ]
+   ],
+   "visible_fraction": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.111,
+    0.222,
+    0.333,
+    0.556,
+    0.889,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.889,
+    0.889,
+    0.889,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "cross": [
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "not-crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing",
+    "crossing"
+   ],
+   "attributes": {
+    "num_lanes": 7,
+    "signalized": "n/a",
+    "walk_speed_mps": 1.593
+   }
+  }
+ ],
+ "traffic": []
+}

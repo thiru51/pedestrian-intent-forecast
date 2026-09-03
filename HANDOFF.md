@@ -1,12 +1,32 @@
-# Handoff
+# Handoff notes
 
-For whoever picks this up next, including me in three months.
+The README explains the idea, [RESULTS.md](RESULTS.md) has the measured numbers. This file
+is about the state of the code and the decisions behind it.
 
-Read `README.md` for how to run things and `END_GOAL.md` for why any of this
-exists. This file is the short version of what is real, what to do first, and
-which decisions were deliberate.
+## Where things stand
 
----
+Trained and measured on CARLA. 222 episodes, pose cached with MediaPipe, fused-vs-pose-only
+ablation at 3 seeds per arm split by episode: **AP 0.9432 fused vs 0.8298 pose-only**, and
+the gain is 2.5x larger on occluded pedestrians than clear ones. That was the point of the
+architecture and it now has evidence behind it.
+
+Three decisions worth knowing, because each was measured rather than assumed:
+
+- **Pose comes from MediaPipe on saved frames, not CARLA's ground-truth skeleton.**
+  Training on a perfect skeleton and deploying on noisy MediaPipe is a trap that would not
+  surface until it mattered. Whatever MediaPipe gets wrong on a render, it now gets wrong
+  at training time too.
+- **Camera FOV is 60 degrees, not 90.** At 90 the pedestrians render about 52 px tall and
+  are unusable; 60 gives a box-height distribution that matches JAAD's.
+- **The headless gate was wrong and is gone.** With `no_rendering_mode=True` the camera
+  still returned 10 of 10 images with real changing content, so frames and headless are not
+  mutually exclusive.
+
+Frames are deleted once pose is cached, which is why 222 episodes occupy 12 MB rather than
+55 GB. Regenerate them by re-running the collector.
+
+The next real step is JAAD/PIE access. Everything downstream is built and measured; the
+only thing missing is real pedestrians.
 
 ## What is actually implemented and checked
 

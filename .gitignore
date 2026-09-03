@@ -17,7 +17,19 @@ venv/
 # Leading slashes matter here. A bare "data/" matches a directory called data
 # at ANY depth, which silently swallowed the whole src/pif/data package.
 # Anchored to the repo root, these only hide the caches they were meant to.
-/data/
+# Note the star: git will not descend into an excluded *directory*, so a bare
+# "/data/" makes the negations below unreachable. "/data/*" excludes the contents
+# and lets specific subdirectories be added back.
+/data/*
+# The CARLA episode annotations are the evidence for RESULTS.md and they are small:
+# 222 episodes come to 12 MB because the RGB frames are deleted once pose is cached.
+!/data/carla_run/
+!/data/carla/
+# The pose cache and the 9 MB MediaPipe model stay out; both are regenerable, one
+# from the frames and one from scripts/fetch_pose_model.sh.
+/data/*.npz
+/data/*.task
+
 # The simulator itself: an 8.3 GB tarball that unpacks to about 20 GB. Fetched
 # by scripts/fetch_carla.sh, never committed. Leading slash for the same reason
 # as the rest of this block: an unanchored "carla/" would also match a
@@ -26,7 +38,8 @@ venv/
 /CARLA_*.tar.gz
 /checkpoints/
 /runs/
-/artifacts/
+/artifacts/*
+!/artifacts/ablation.json
 /build/
 /dist/
 

@@ -23,11 +23,12 @@ check.
 | JAAD annotation parser | Verified against the real released XML (346 videos) |
 | PIE annotation parser | Verified against the real released zips (53 videos) |
 | CARLA recording parser | Written, unit-tested against a committed fixture |
-| CARLA collector | Run against a live CARLA 0.9.16 server; 19 of 20 attempted episodes recorded |
-| Training on CARLA episodes | **Has not happened.** The episodes exist, no model has been trained on them |
+| CARLA collector | Run against a live CARLA 0.9.16 server; **222 episodes** collected |
+| Training on CARLA episodes | **Done.** Fused vs pose-only ablation, 3 seeds, split by episode. See [RESULTS.md](RESULTS.md) |
 | ONNX export + round trip | Verified numerically, see below |
 | Training on real JAAD/PIE video | **Has not happened.** Dataset video clips not yet obtained |
-| Accuracy on real pedestrians | **No such number exists in this repo** |
+| Accuracy on synthetic CARLA | AP **0.943** fused vs **0.830** pose-only; gain is 2.5x larger on occluded pedestrians |
+| Accuracy on real pedestrians | **No such number exists in this repo.** Blocked on JAAD/PIE clip access |
 | On-device (Jetson) latency | **Not benchmarked.** There is no physical device here |
 
 Everything that currently runs end to end runs on **synthetic data** generated

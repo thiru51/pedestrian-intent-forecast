@@ -1,10 +1,17 @@
 # Progress
 
-State of the repository. `[x]` means done and checked, `[ ]` means not done.
-Nothing is marked done on the strength of "the code exists" — it has to have
-been run.
+**Summary: the pipeline is trained and measured on CARLA data.** 222 episodes collected,
+pose cached with MediaPipe, and the fused-vs-pose-only ablation run with 3 seeds per arm,
+split by episode.
 
-Last updated: 2026-09-03.
+**Result:** fusion reaches AP 0.9432 against 0.8298 for pose-only (+13.7% relative). The
+gain is **2.5x larger on occluded pedestrians** (+0.2086 AP) than on clear ones (+0.0831),
+which is the hypothesis the architecture was built on. Miss rate on occluded pedestrians
+falls from 44.1% to 19.8%. Full table in [RESULTS.md](RESULTS.md).
+
+**These are synthetic pedestrians with ground-truth labels, not real ones.** No number in
+this repository is accuracy on real pedestrians; that stays blocked on JAAD/PIE clip
+access. CARLA supplies no gesture labels, so the gesture head remains unevaluated.
 
 ## Data
 
