@@ -262,6 +262,60 @@ def visible_fraction(world, camera_location, actor, tags) -> float:
 # --------------------------------------------------------------------------
 
 
+# Ground a walker may legitimately stand on. Anything else under their feet -
+# most often a parked car, which Town10 lines its kerbs with - means the spot is
+# not a pavement and the walker would spawn standing on a car roof.
+# Ground a walker may legitimately stand on. Note what is not here: vehicles,
+# which Town10 parks along both kerbs, and buildings. A walker spawned on a car
+# roof settles on the bodywork and then cannot walk at all.
+_STANDABLE_TAG_NAMES = ("Sidewalks", "Ground", "Terrain", "Roads", "RoadLines")
+# Preferred, when there is one within reach. Standing on the asphalt of a
+# parking lane is acceptable; standing on a pavement is what a person does.
+_PAVEMENT_TAG_NAME = "Sidewalks"
+
+
+def standable_tags() -> set:
+    labels = carla.CityObjectLabel
+    return {getattr(labels, n) for n in _STANDABLE_TAG_NAMES if hasattr(labels, n)}
+
+
+def pavement_point(world, carla_map, transform, side: int, lane_width: float, standable):
+    """First spot out to one side of the lane where a person could stand.
+
+    Steps outward from the lane centre and asks the level what is under each
+    candidate, preferring an actual pavement but accepting any solid ground
+    that the map does not call a traffic lane. `side` is +1 for the lane's
+    right, -1 for its left.
+
+    Two things this replaces, both of which were wrong. Guessing a fixed offset
+    puts the walker on a parked car in Town10, where it settles on the bodywork
+    and cannot move. And accepting whatever ground is there put the
+    "never crosses" walker in the oncoming carriageway for a whole episode,
+    because tarmac is perfectly standable - hence the map query as well.
+    """
+    pavement = getattr(carla.CityObjectLabel, _PAVEMENT_TAG_NAME, None)
+    right = transform.get_right_vector()
+    fallback = None
+    for step in range(0, 76):
+        lateral = lane_width / 2.0 + 1.0 + 0.25 * step
+        probe = carla.Location(
+            x=transform.location.x + right.x * lateral * side,
+            y=transform.location.y + right.y * lateral * side,
+            z=transform.location.z + 3.0,
+        )
+        hit = world.ground_projection(probe, 12.0)
+        if hit is None or hit.label not in standable:
+            continue
+        found = carla.Location(x=probe.x, y=probe.y, z=hit.location.z)
+        if on_driving_lane(carla_map, found):
+            continue
+        if hit.label == pavement:
+            return found
+        if fallback is None:
+            fallback = found
+    return fallback
+
+
 def on_driving_lane(carla_map, location) -> bool:
     """True when the location sits on a lane vehicles drive on.
 
@@ -359,51 +413,50 @@ class WalkerPlan:
     destination: object
     speed: float
     ego_relevant: bool
-    pause_from: int = -1     # frame the walker stops at the kerb
+    # Frame the walker sets off. Standing at the kerb first is what makes the
+    # episode a forecasting problem: the model has to call it while the person
+    # is still stationary.
+    start_at: int = 0
+    pause_from: int = -1     # frame the walker stops partway across
     pause_until: int = -1    # frame it starts moving again
     actor: object = None
-    controller: object = None
     frames: list = field(default_factory=list)
     bbox: list = field(default_factory=list)
     visible: list = field(default_factory=list)
     cross: list = field(default_factory=list)
 
 
-def plan_walkers(scenario: str, episode: int, anchor, lane_width: float, rng):
-    """Where the walkers go, expressed relative to a waypoint ahead of the ego.
+def plan_walkers(scenario: str, episode: int, near, far, forward, rng):
+    """Where the walkers go.
 
-    Everything is built off `anchor`, a waypoint on the ego's own lane some
-    distance in front of it, rather than off map coordinates. That way the same
-    scenario code works in any town without a table of hand-picked locations.
+    `near` and `far` are the two pavement points either side of the ego's lane,
+    already resolved against the level geometry, and `forward` is the lane's
+    direction. Building the scenarios from those rather than from map
+    coordinates means the same code works in any town.
     """
-    tf = anchor.transform
-    right = tf.get_right_vector()
-    forward = tf.get_forward_vector()
-    half = lane_width / 2.0
-    kerb = half + 2.0
-
-    def offset(lateral: float, along: float = 0.0, up: float = 1.0):
-        return carla.Location(
-            x=tf.location.x + right.x * lateral + forward.x * along,
-            y=tf.location.y + right.y * lateral + forward.y * along,
-            z=tf.location.z + up,
-        )
-
-    near = offset(kerb)
-    far = offset(-kerb)
     speed = round(rng.uniform(1.1, 1.6), 3)
     pid = f"ep_{episode:04d}_w0"
 
+    def along(point, metres: float):
+        return carla.Location(
+            x=point.x + forward.x * metres,
+            y=point.y + forward.y * metres,
+            z=point.z,
+        )
+
+    wait = rng.randint(30, 55)
+
     if scenario == "straight":
         return [
-            WalkerPlan(pid, scenario, near, far, speed, ego_relevant=True)
+            WalkerPlan(pid, scenario, near, far, speed, ego_relevant=True,
+                       start_at=wait)
         ]
 
     if scenario == "hesitate":
         # Stops for one to two seconds with its toes at the kerb, then commits.
         # This is the case a purely kinematic predictor gets wrong: velocity
         # goes to zero and the intent does not.
-        pause_from = rng.randint(40, 70)
+        pause_from = wait + rng.randint(8, 20)
         return [
             WalkerPlan(
                 pid,
@@ -412,18 +465,19 @@ def plan_walkers(scenario: str, episode: int, anchor, lane_width: float, rng):
                 far,
                 speed,
                 ego_relevant=True,
+                start_at=wait,
                 pause_from=pause_from,
                 pause_until=pause_from + rng.randint(20, 40),
             )
         ]
 
     if scenario == "occluded":
-        # Starts further out behind where the parked car will be, so the first
-        # part of the walk is genuinely hidden from the camera.
+        # Starts a little further back along the pavement, behind where the
+        # parked car goes, so the opening frames are genuinely hidden.
         return [
             WalkerPlan(
-                pid, scenario, offset(kerb + 1.5, along=-1.0), far, speed,
-                ego_relevant=True,
+                pid, scenario, along(near, -3.0), far, speed, ego_relevant=True,
+                start_at=wait,
             )
         ]
 
@@ -432,12 +486,39 @@ def plan_walkers(scenario: str, episode: int, anchor, lane_width: float, rng):
         # what the model has to learn to separate from a real approach.
         return [
             WalkerPlan(
-                pid, scenario, far, offset(-kerb, along=18.0), speed,
-                ego_relevant=False,
+                pid, scenario, far, along(far, 15.0), speed, ego_relevant=False
             )
         ]
 
     raise ValueError(f"unknown scenario {scenario!r}")
+
+
+def step_towards(walker, destination, speed: float) -> None:
+    """Push a walker one step towards a point, in a straight line.
+
+    Why not `WalkerAIController`, which is the usual way to move a CARLA
+    pedestrian: that controller navigates the pedestrian navmesh, and the
+    navmesh does not cover the carriageway except where the map has drawn a
+    crosswalk. Asked to walk to a point on the far pavement it routes to the
+    nearest crossing instead, which in testing meant the walker strolled off
+    down the pavement and never entered the road at all. A scripted crossing
+    scenario needs the walker to cross where the script says, so the direction
+    is set here every frame instead. It also makes the hesitation exact: speed
+    goes to zero on a chosen frame and back up on another.
+    """
+    location = walker.get_location()
+    dx = destination.x - location.x
+    dy = destination.y - location.y
+    distance = math.sqrt(dx * dx + dy * dy)
+    if distance < 0.4 or speed <= 0.0:
+        walker.apply_control(carla.WalkerControl(speed=0.0))
+        return
+    walker.apply_control(
+        carla.WalkerControl(
+            direction=carla.Vector3D(x=dx / distance, y=dy / distance, z=0.0),
+            speed=speed,
+        )
+    )
 
 
 def parked_vehicle_transform(anchor, lane_width: float):
@@ -462,6 +543,24 @@ def parked_vehicle_transform(anchor, lane_width: float):
 # --------------------------------------------------------------------------
 
 
+def advance(world, images, args):
+    """Step the simulation once and return the image belonging to that step.
+
+    Two things this gets right that a bare `world.tick()` does not. The sensor
+    callback runs on its own thread, so the queue can hand back an image from an
+    earlier tick; matching on the frame id is what keeps the saved pixels lined
+    up with the boxes. And ticks that happen during setup still produce images,
+    which would otherwise pile up and put the whole recording a few frames out.
+    """
+    frame_id = world.tick()
+    if args.headless:
+        return None
+    while True:
+        image = images.get(timeout=args.timeout)
+        if image.frame >= frame_id:
+            return image
+
+
 class Stage:
     """Holds every actor spawned for one episode so teardown cannot miss one.
 
@@ -474,7 +573,6 @@ class Stage:
         self.world = world
         self.original_settings = original_settings
         self.sensors: list = []
-        self.controllers: list = []
         self.actors: list = []
 
     def __enter__(self):
@@ -485,12 +583,6 @@ class Stage:
             try:
                 sensor.stop()
                 sensor.destroy()
-            except RuntimeError:
-                pass
-        for controller in self.controllers:
-            try:
-                controller.stop()
-                controller.destroy()
             except RuntimeError:
                 pass
         for actor in self.actors:
@@ -539,6 +631,11 @@ def run_episode(world, args, episode: int, scenario: str):
             print(f"  episode {episode}: could not spawn the ego vehicle, skipping")
             return None
         stage.actors.append(ego)
+        # An actor's location is not readable until the world has stepped once
+        # after spawning it. Skip this tick and get_location() answers with
+        # stale data - in practice the origin - and every walker below gets
+        # staged on a lane on the other side of town.
+        world.tick()
 
         camera_bp = blueprints.find("sensor.camera.rgb")
         camera_bp.set_attribute("image_size_x", str(args.width))
@@ -564,6 +661,16 @@ def run_episode(world, args, episode: int, scenario: str):
         anchor = ahead[0]
         lane_width = anchor.lane_width
         num_lanes = count_driving_lanes(anchor)
+        standable = standable_tags()
+        near = pavement_point(
+            world, carla_map, anchor.transform, 1, lane_width, standable
+        )
+        far = pavement_point(
+            world, carla_map, anchor.transform, -1, lane_width, standable
+        )
+        if near is None or far is None:
+            print(f"  episode {episode}: no pavement either side here, skipping")
+            return None
         crosswalks = carla_map.get_crosswalks()
         crosswalk_here = near_crosswalk(crosswalks, anchor.transform.location)
 
@@ -588,15 +695,16 @@ def run_episode(world, args, episode: int, scenario: str):
                     }
                 )
 
-        plans = plan_walkers(scenario, episode, anchor, lane_width, rng)
+        plans = plan_walkers(
+            scenario, episode, near, far, anchor.transform.get_forward_vector(), rng
+        )
         walker_bps = blueprints.filter("walker.pedestrian.*")
-        controller_bp = blueprints.find("controller.ai.walker")
         for plan in plans:
             bp = walker_bps[rng.randrange(len(walker_bps))]
             if bp.has_attribute("is_invincible"):
                 bp.set_attribute("is_invincible", "false")
             actor = None
-            for lift in (0.0, 0.5, 1.0, 1.5):
+            for lift in (0.4, 0.8, 1.2):
                 spot = carla.Transform(
                     carla.Location(
                         x=plan.start.x, y=plan.start.y, z=plan.start.z + lift
@@ -611,29 +719,13 @@ def run_episode(world, args, episode: int, scenario: str):
             plan.actor = actor
             stage.actors.append(actor)
 
-        world.tick()
-
-        for plan in plans:
-            controller = world.spawn_actor(
-                controller_bp, carla.Transform(), attach_to=plan.actor
-            )
-            plan.controller = controller
-            stage.controllers.append(controller)
-
-        world.tick()
-
-        for plan in plans:
-            plan.controller.start()
-            plan.controller.go_to_location(plan.destination)
-            plan.controller.set_max_speed(plan.speed)
-
-        # Let physics settle and the walkers actually start moving before the
-        # first recorded frame, otherwise every episode opens with a person
-        # standing still for half a second.
+        # Let the walkers settle onto the ground and get moving before the
+        # first recorded frame, so an episode does not open with a person
+        # dropping the last few centimetres.
         for _ in range(args.warmup_frames):
-            world.tick()
-            if not args.headless:
-                images.get(timeout=args.timeout)
+            for plan in plans:
+                step_towards(plan.actor, plan.destination, 0.0)
+            advance(world, images, args)
 
         # Fetched once: nothing spawns or despawns during an episode, and this
         # is an RPC to the server.
@@ -652,24 +744,21 @@ def run_episode(world, args, episode: int, scenario: str):
             )
 
             for plan in plans:
-                if plan.pause_from < 0:
-                    continue
-                if frame == plan.pause_from:
-                    plan.controller.set_max_speed(0.0)
-                elif frame == plan.pause_until:
-                    plan.controller.set_max_speed(plan.speed)
+                waiting = frame < plan.start_at
+                paused = plan.pause_from <= frame < plan.pause_until
+                step_towards(
+                    plan.actor,
+                    plan.destination,
+                    0.0 if (waiting or paused) else plan.speed,
+                )
 
-            world.tick()
-            if not args.headless:
-                image = images.get(timeout=args.timeout)
-                if save_frames:
-                    raw = np.frombuffer(image.raw_data, dtype=np.uint8)
-                    # CARLA hands over BGRA; drop alpha and flip to RGB.
-                    frames.append(
-                        raw.reshape(args.height, args.width, 4)[:, :, :3][
-                            :, :, ::-1
-                        ].copy()
-                    )
+            image = advance(world, images, args)
+            if save_frames and image is not None:
+                raw = np.frombuffer(image.raw_data, dtype=np.uint8)
+                # CARLA hands over BGRA; drop alpha and flip to RGB.
+                frames.append(
+                    raw.reshape(args.height, args.width, 4)[:, :, :3][:, :, ::-1].copy()
+                )
 
             world_to_camera = np.array(camera.get_transform().get_inverse_matrix())
             camera_location = camera.get_transform().location
@@ -785,6 +874,28 @@ def run_episode(world, args, episode: int, scenario: str):
         return record, (np.stack(frames) if frames else None)
 
 
+def unusable(record: dict) -> str | None:
+    """Why this episode should be thrown away, or None to keep it.
+
+    A recording can come out technically valid and still be worthless: the
+    walker was staged behind a row of parked cars and never got a clear frame,
+    or it walked into a wall and never moved. Both happen, both depend on where
+    in the town the episode landed, and both are better caught here than found
+    later in a training set.
+    """
+    if not record["walkers"]:
+        return "no walker was ever in frame"
+    for walker in record["walkers"]:
+        visible = walker["visible_fraction"]
+        if visible and max(visible) < 0.05:
+            return f"{walker['ped_id']} was hidden for the whole episode"
+        boxes = walker["bbox"]
+        travelled = max(abs(b[0] - boxes[0][0]) for b in boxes)
+        if travelled < 5.0:
+            return f"{walker['ped_id']} never moved across the frame"
+    return None
+
+
 def collect(args) -> int:
     client = carla.Client(args.host, args.port)
     client.set_timeout(args.timeout)
@@ -821,8 +932,9 @@ def collect(args) -> int:
         if result is None:
             continue
         record, frames = result
-        if not record["walkers"]:
-            print(f"  episode {episode}: no walker was ever in frame, discarding")
+        problem = unusable(record)
+        if problem:
+            print(f"  episode {episode}: {problem}, discarding")
             continue
 
         json_path = out_dir / f"{record['episode_id']}.json"
