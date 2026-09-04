@@ -265,8 +265,14 @@ def main() -> int:
     )
 
     art = out_dir(cfg)
-    path = art / "ablation.json"
+    # Name the artifact after the source. A bare ablation.json meant that running
+    # --source jaad silently overwrote the CARLA results the write-up is built on;
+    # only git had the original. The plain name stays as an alias for carla so
+    # nothing that already reads it breaks.
+    path = art / f"ablation_{cfg.data.source.lower()}.json"
     path.write_text(json.dumps(summary, indent=2) + "\n")
+    if cfg.data.source.lower() == "carla":
+        (art / "ablation.json").write_text(json.dumps(summary, indent=2) + "\n")
 
     print()
     print("=" * 78)
