@@ -1,0 +1,33 @@
+device=cuda:0 (NVIDIA GeForce RTX 4080 Laptop GPU), sm_89, 11.6 GiB total / 10.0 GiB free, bf16=True, amp=bfloat16, tf32=True
+data: jaad 6285 train / 775 val windows, positive rate 0.545 / 0.341
+split: by video, 127 train / 16 val, no overlap
+protocol: 5 seeds per arm, 30 epochs, identical data and schedule. Both arms run WITHOUT pose.
+
+--- context  seed 0  (446,624 params)
+    AP=0.5379 AUC=0.6837 F1=0.5445 prec=0.4894 recall=0.6136 miss=0.3864
+--- context+gesture  seed 0  (458,192 params)
+    AP=0.6539 AUC=0.7687 F1=0.6212 prec=0.5652 recall=0.6894 miss=0.3106
+--- context  seed 1  (446,624 params)
+    AP=0.6643 AUC=0.7909 F1=0.6422 prec=0.5955 recall=0.6970 miss=0.3030
+--- context+gesture  seed 1  (458,192 params)
+    AP=0.5655 AUC=0.7547 F1=0.6486 prec=0.5877 recall=0.7235 miss=0.2765
+--- context  seed 2  (446,624 params)
+    AP=0.6177 AUC=0.7859 F1=0.6491 prec=0.6046 recall=0.7008 miss=0.2992
+--- context+gesture  seed 2  (458,192 params)
+    AP=0.6376 AUC=0.7829 F1=0.6295 prec=0.5549 recall=0.7273 miss=0.2727
+--- context  seed 3  (446,624 params)
+    AP=0.6908 AUC=0.7827 F1=0.6427 prec=0.5645 recall=0.7462 miss=0.2538
+--- context+gesture  seed 3  (458,192 params)
+    AP=0.6208 AUC=0.7541 F1=0.5996 prec=0.5611 recall=0.6439 miss=0.3561
+--- context  seed 4  (446,624 params)
+    AP=0.6608 AUC=0.7951 F1=0.6427 prec=0.5857 recall=0.7121 miss=0.2879
+--- context+gesture  seed 4  (458,192 params)
+    AP=0.5933 AUC=0.7147 F1=0.5931 prec=0.5443 recall=0.6515 miss=0.3485
+
+arm                                AP      AUC
+context                 0.6343 +-0.0536   0.7677
+context+gesture         0.6142 +-0.0316   0.7550
+
+gesture - context: dAP -0.0201  dAUC -0.0127
+
+wrote artifacts/gesture_ablation.json

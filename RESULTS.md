@@ -12,6 +12,68 @@ a measurement of the pipeline on synthetic video with ground-truth labels. It is
 accuracy on real pedestrians and must never be quoted as one. The run that would mean that
 is `--source jaad` with a pose cache, and it needs the clips, which are still access-gated.
 
+## Real pedestrians: the first JAAD numbers
+
+Everything below this section is CARLA. This part is not.
+
+**What made it possible.** RESULTS.md previously said the real-data run was "blocked
+on JAAD/PIE clip access". That was half right. The 2.9 GB of video clips are indeed a
+separate download and are still not here -- but the **annotations are not gated at
+all**, and `pif.data.jaad` says so in its own docstring: "Only the XML is needed here."
+346 annotated videos with JAAD's own train/val split ids were already on disk.
+
+**What that buys, and what it does not.** No clips means no pose channel. So this is
+not the pose-plus-gesture-plus-context experiment; it is everything except pose. The
+existing `fusion` vs `pose_only` ablation is therefore **meaningless on this data** --
+run it here and `pose_only` returns AUC exactly 0.5000 with recall 1.0000, a
+null-input model that predicts every window positive. Quoting its +0.145 AP gap as a
+real-data result would be reporting the difference between a model and an empty one.
+
+`scripts/gesture_ablation.py` runs the comparison that is actually available: both arms
+without pose, differing in `use_gesture` and nothing else.
+
+### Does the gesture head help?
+
+This is the question the project has never been able to ask. CARLA supplies no gesture
+annotations, so on synthetic data those label groups are masked and the head is never
+scored. JAAD annotates `hand_gesture`, `nod` and `reaction`.
+
+5 seeds, 30 epochs, 6,285 train / 775 val windows, split by video, val positive rate
+0.341:
+
+| arm | AP | AUC |
+|---|---|---|
+| context | 0.6343 +-0.0536 | 0.7677 |
+| context+gesture | 0.6142 +-0.0316 | 0.7550 |
+
+**dAP -0.0201.** And the per-seed deltas are what matter:
+
+| seed | 0 | 1 | 2 | 3 | 4 |
+|---|---|---|---|---|---|
+| gesture - context | **+0.1160** | **-0.0988** | +0.0199 | -0.0700 | -0.0676 |
+
+The sign flips across seeds and the spread (+-0.054 on the context arm alone) is more
+than twice the mean difference. **The gesture head has no measurable effect here.**
+That is a null result, not a negative one -- there is no evidence it helps and none
+that it hurts.
+
+### What this does and does not establish
+
+**It does** give the repository its first number on real pedestrians. Context plus
+trajectory reaches **AP 0.634 against a positive rate of 0.341**, so the model learns
+real crossing intent from real annotations, on a by-video split, with no pose at all.
+
+**It does not** test the gesture head as designed. The head consumes
+`POSE_DIM + CONTEXT_DIM` per frame, and the pose half is zeros here. A head starved of
+its main input showing no effect is weak evidence about the head. Settling it needs the
+clips and a pose cache; that run is still not done.
+
+**It also does not** transfer to the CARLA numbers below. Different dataset, different
+crossing definition, different label noise, and pose present there but absent here.
+The two sets of numbers should never be put in the same table.
+
+---
+
 ## What was run
 
 | | |
@@ -102,8 +164,11 @@ camera setups is unmeasured.
 **50 validation episodes is a small held-out set.** The per-seed spread is tight and the
 arms are cleanly separated, but the third decimal place should not be leaned on.
 
-**No real-data number exists.** Nothing in this repository has been trained or evaluated on
-real pedestrians. That remains blocked on JAAD/PIE clip access.
+**The real-data number is partial.** There is now a JAAD result (see the section at the
+top): AP 0.634 on real pedestrians, by-video split. But it runs without pose, because
+the clips are a separate 2.9 GB download that has not been made. The full
+pose-plus-gesture-plus-context architecture has still never been evaluated on real
+data, and the gesture head has still never been tested with its pose input present.
 
 ## Summary
 

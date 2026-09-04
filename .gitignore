@@ -52,3 +52,8 @@ venv/
 .pytest_cache/
 .DS_Store
 *.swp
+
+# JAAD annotations: a 295 MB clone of github.com/ykotseruba/JAAD. Not ours to
+# redistribute, and one git clone to restore. scripts/gesture_ablation.py says
+# where it comes from.
+/external/
