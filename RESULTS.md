@@ -12,6 +12,54 @@ a measurement of the pipeline on synthetic video with ground-truth labels. It is
 accuracy on real pedestrians and must never be quoted as one. The run that would mean that
 is `--source jaad` with a pose cache, and it needs the clips, which are still access-gated.
 
+## Real pedestrians, with pose: the headline result
+
+The clips were downloaded (2.9 GB) and MediaPipe run over every annotated pedestrian
+box: **686 tracks, 132,700 pedestrian-frames**, cached in `data/pose_jaad.npz`. So the
+architecture this project is actually about -- pose fused with gesture and scene
+context -- has now been evaluated on real pedestrians. 3 seeds, 30 epochs, split by
+video.
+
+| arm | AP | AUC |
+|---|---|---|
+| pose_only | 0.3849 +-0.0095 | 0.5461 |
+| **fusion** | **0.6326** +-0.0183 | **0.7655** |
+
+**+0.2477 AP, a 64% relative gain**, on real data. Per-seed AP was [0.654, 0.621, 0.623]
+for fusion against [0.394, 0.385, 0.375] for pose_only; the ranges do not overlap.
+
+### The CARLA occlusion result does not reproduce
+
+This is the part worth reading. The CARLA section below reports that the fusion gain is
+**2.5x larger on occluded pedestrians** than on clear ones, and calls that "the result
+worth keeping". On real data it is not there:
+
+| | occluded | clear | occluded / clear |
+|---|---|---|---|
+| CARLA (synthetic) | +0.2086 | +0.0831 | **2.5x** |
+| JAAD (real) | +0.2001 +-0.105 | +0.2574 +-0.017 | **0.8x** |
+
+On JAAD the occluded gain is if anything *smaller* than the clear gain, and the
+difference (+0.057) sits well inside the seed spread on that subset (+-0.105 on n=126).
+So the honest statement is not "the opposite is true" -- it is:
+
+> **On real pedestrians there is no measurable occlusion-specific advantage.** Fusion
+> helps a great deal overall, and the claim that it helps *specifically* when the
+> pedestrian is occluded is a property of the CARLA data, not a property of the method.
+
+Two candidate reasons, neither tested here. CARLA's occlusion labels are exact and
+CARLA's occluders are large scripted vehicles, so "occluded" there is a cleaner and more
+extreme condition than JAAD's annotation. And the CARLA pose came from rendered frames
+where MediaPipe either works or fails cleanly; on real video it degrades gradually, so
+the pose_only baseline may already be partly broken on the clear subset too.
+
+**What this changes.** The occlusion claim should not be quoted without the dataset
+attached to it. The overall fusion result is stronger than it was -- it now holds on
+real pedestrians, not only in simulation -- but the mechanism story does not survive the
+move.
+
+---
+
 ## Real pedestrians: the first JAAD numbers
 
 Everything below this section is CARLA. This part is not.
