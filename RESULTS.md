@@ -105,16 +105,42 @@ than twice the mean difference. **The gesture head has no measurable effect here
 That is a null result, not a negative one -- there is no evidence it helps and none
 that it hurts.
 
+### With pose: the caveat removed, and the answer unchanged
+
+The section above ran both arms **without** pose, because the clips had not been
+downloaded, and flagged that as the reason not to trust the null: a gesture head consumes
+`POSE_DIM + CONTEXT_DIM` and half its input was zeros.
+
+The clips are now here and the pose cache exists, so the comparison was re-run with pose
+present in both arms. 5 seeds, 30 epochs:
+
+| arm | AP |
+|---|---|
+| context | 0.6031 +-0.0170 |
+| context+gesture | 0.6264 +-0.0374 |
+
+**dAP +0.0233**, against a largest-arm seed spread of 0.0374. Per-seed:
+**+0.070, +0.038, +0.020, -0.071, +0.061**.
+
+**Still not detectable.** The mean is positive and four of five seeds are positive, which
+is a mild improvement on the pose-free run where the sign split 2/3 -- so there is a hint
+the head does something once it has its main input. But one seed goes the other way by
+more than the mean, and the difference is well inside the spread.
+
+The honest statement is now stronger than it was, because the excuse is gone: **with real
+gesture labels and real pose, on real pedestrians, the gesture head has no measurable
+effect on crossing prediction at this budget.** What would settle it is more seeds, not
+more caveats -- the effect, if it exists, is smaller than the seed noise and no amount of
+re-describing changes that.
+
 ### What this does and does not establish
 
 **It does** give the repository its first number on real pedestrians. Context plus
 trajectory reaches **AP 0.634 against a positive rate of 0.341**, so the model learns
 real crossing intent from real annotations, on a by-video split, with no pose at all.
 
-**It does not** test the gesture head as designed. The head consumes
-`POSE_DIM + CONTEXT_DIM` per frame, and the pose half is zeros here. A head starved of
-its main input showing no effect is weak evidence about the head. Settling it needs the
-clips and a pose cache; that run is still not done.
+**It does not** test the gesture head as designed -- but the run above now does, with
+pose present, and reaches the same null. The remaining gap is seeds, not inputs.
 
 **It also does not** transfer to the CARLA numbers below. Different dataset, different
 crossing definition, different label noise, and pose present there but absent here.
