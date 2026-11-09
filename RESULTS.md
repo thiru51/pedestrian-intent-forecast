@@ -5,12 +5,12 @@ Run 3 September 2026. Every number here comes from `artifacts/ablation.json` and
 
 ## Read this first
 
-**These are numbers on simulated pedestrians.** The labels are exact, which is the whole
+**The CARLA sections below are numbers on simulated pedestrians.** The labels are exact, which is the whole
 point of using a simulator, but the people are not real: they walk on a navmesh, they are
 lit by a game engine, and they never do the things a gesture head exists to catch. This is
 a measurement of the pipeline on synthetic video with ground-truth labels. It is **not**
-accuracy on real pedestrians and must never be quoted as one. The run that would mean that
-is `--source jaad` with a pose cache, and it needs the clips, which are still access-gated.
+accuracy on real pedestrians and must never be quoted as one. The real-pedestrian run
+(`--source jaad` with a pose cache) has since been done: it is the next section.
 
 ## Real pedestrians, with pose: the headline result
 

@@ -26,12 +26,13 @@ check.
 | CARLA collector | Run against a live CARLA 0.9.16 server; **222 episodes** collected |
 | Training on CARLA episodes | **Done.** Fused vs pose-only ablation, 3 seeds, split by episode. See [RESULTS.md](RESULTS.md) |
 | ONNX export + round trip | Verified numerically, see below |
-| Training on real JAAD/PIE video | **Has not happened.** Dataset video clips not yet obtained |
+| Training on real JAAD video | **Done.** Clips downloaded (2.9 GB), MediaPipe pose over **686 tracks, 132,700 pedestrian-frames**, 3 seeds, split by video. See [RESULTS.md](RESULTS.md) |
+| Training on real PIE video | **Has not happened.** PIE clips (74 GB) not yet obtained |
 | Accuracy on synthetic CARLA | AP **0.943** fused vs **0.830** pose-only; gain is 2.5x larger on occluded pedestrians |
-| Accuracy on real pedestrians | **No such number exists in this repo.** Blocked on JAAD/PIE clip access |
+| Accuracy on real pedestrians (JAAD) | AP **0.633** fused vs **0.385** pose-only, per-seed ranges do not overlap. The CARLA occlusion advantage does **not** reproduce (0.8x on JAAD vs 2.5x on CARLA) |
 | On-device (Jetson) latency | **Not benchmarked.** There is no physical device here |
 
-Everything that currently runs end to end runs on **synthetic data** generated
+The smoke test and the default plumbing checks run on **synthetic data** generated
 by `src/pif/data/synthetic.py`. That module fabricates sequences with the right
 shapes and a plausible causal story so the code path can be exercised. Its
 numbers verify that the plumbing works. They are **not results**, they are not
@@ -45,9 +46,9 @@ walker's 3D bounding box is known, "on the road" is a map query, and how much
 of the person is hidden is measured by casting rays at them. That is real
 training data in a way `synthetic.py` never was. It is still a simulation.
 Simulated people move like a navigation mesh, not like people, and a model that
-does well on CARLA has not been shown to do well on a street. **The plan is to
-train on CARLA and evaluate on real JAAD and PIE once access lands**, and the
-CARLA number and the JAAD number will always be reported separately.
+does well on CARLA has not been shown to do well on a street. **JAAD has now
+been run on its own** (see the Status table and RESULTS.md); PIE is still
+pending. The CARLA number and the JAAD number are always reported separately.
 
 One thing CARLA cannot supply at all: **gestures**. A CARLA walker has no hand
 signals, no gaze target and no phone, so the `action`, `look` and `gesture`
